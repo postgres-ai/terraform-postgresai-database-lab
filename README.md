@@ -1,3 +1,5 @@
-# Database Lab Infrastructure
+# Database Lab Engine Terraform Module
 
-Terraform module to deploy the Database Lab Engine into cloud providers.
+This [Terraform Module](https://www.terraform.io/docs/language/modules/index.html) is responsible for
+deploying the [Database Lab Engine](https://gitlab.com/postgres-ai/database-lab) to cloud hosting
+providers.
