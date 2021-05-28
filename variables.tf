@@ -27,6 +27,11 @@ variable "allow_ssh_from_cidrs" {
     default = ["0.0.0.0/0"]
 }
 
+variable "allow_api_from_cidrs" {
+    description = "List of CIDRs allowed to connect to API"
+    default = ["0.0.0.0/0"]
+}
+
 variable "tag_name" {
     description = "Value of the tags Name to apply to all resources"
     default = "DBLABserver"
