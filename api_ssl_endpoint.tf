@@ -21,14 +21,10 @@ resource "aws_lb" "dle_api_lb" {
 resource "aws_lb_listener" "dle_api_ssl_listener" {
   load_balancer_arn = aws_lb.dle_api_lb.arn
 
-  port              = 80
-  protocol          = "HTTP"
-
-  # FIXME -- Need to have Domain and Certificate in ACM
-  # port              = 443
-  # protocol          = "HTTPS"
-  # ssl_policy        = "ELBSecurityPolicy-2016-08"
-  # certificate_arn   = aws_acm_certificate.this.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.dblab_api_subdomain_cert.arn
 
   default_action {
     type             = "forward"

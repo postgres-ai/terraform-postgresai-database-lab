@@ -36,3 +36,13 @@ variable "tag_name" {
     description = "Value of the tags Name to apply to all resources"
     default = "DBLABserver"
 }
+
+variable "dns_zone_name" {
+    description = "The Route53 hosted zone where the DLE will be managed"
+    default = "aws.postgres.ai"
+}
+
+variable "dns_api_subdomain" {
+    description = "The Hosted zone subdomain that will point to the DLE API"
+    default = "demo-api"
+}
