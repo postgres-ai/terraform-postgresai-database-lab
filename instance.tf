@@ -19,8 +19,8 @@ resource "aws_instance" "aws_ec2" {
   ami               = "${data.aws_ami.ami.id}"
   availability_zone = "${var.availability_zone}"
   instance_type     = "${var.instance_type}"
-  security_groups   = ["${aws_security_group.sg.name}"]
+  security_groups   = ["${aws_security_group.dle_instance_sg.name}"]
   key_name          = "${var.keypair}"
   tags              = "${local.common_tags}"
-user_data = "${data.template_file.init.rendered}"
+  user_data         = "${data.template_file.init.rendered}"
 }

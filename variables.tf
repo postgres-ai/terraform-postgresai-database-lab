@@ -37,9 +37,24 @@ variable "allow_ssh_from_cidrs" {
     default = ["0.0.0.0/0"]
 }
 
+variable "allow_api_from_cidrs" {
+    description = "List of CIDRs allowed to connect to API"
+    default = ["0.0.0.0/0"]
+}
+
 variable "tag_name" {
     description = "Value of the tags Name to apply to all resources"
     default = "DBLABserver"
+}
+
+variable "dns_zone_name" {
+    description = "The Route53 hosted zone where the DLE will be managed"
+    default = "aws.postgres.ai"
+}
+
+variable "dns_api_subdomain" {
+    description = "The Hosted zone subdomain that will point to the DLE API"
+    default = "demo-api"
 }
 
 variable "availability_zone" {
@@ -64,6 +79,7 @@ variable "ec2_ebs_names" {
     "/dev/xvdg",
   ]
 }
+
 variable "postgres_source_dbname" {
   description = "Source database name"
   default="dbname"

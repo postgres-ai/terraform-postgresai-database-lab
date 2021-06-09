@@ -1,9 +1,9 @@
-resource "aws_security_group" "sg" {
+resource "aws_security_group" "dle_api_sg" {
   ingress {
-    cidr_blocks = "${var.allow_ssh_from_cidrs}"
+    cidr_blocks = "${var.allow_api_from_cidrs}"
 
-    from_port = 22
-    to_port   = 22
+    from_port = 443
+    to_port   = 443
     protocol  = "tcp"
   }
 
@@ -15,4 +15,35 @@ resource "aws_security_group" "sg" {
   }
 
   tags = "${local.common_tags}"
+}
+
+resource "aws_security_group" "dle_instance_sg" {
+  tags = "${local.common_tags}"
+}
+
+resource "aws_security_group_rule" "dle_instance_ssh" {
+  security_group_id = aws_security_group.dle_instance_sg.id
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = "${var.allow_ssh_from_cidrs}"
+}
+
+resource "aws_security_group_rule" "dle_instance_api" {
+  security_group_id         = aws_security_group.dle_instance_sg.id
+  type                      = "ingress"
+  from_port                 = 2345
+  to_port                   = 2345
+  protocol                  = "tcp"
+  source_security_group_id  = aws_security_group.dle_api_sg.id
+}
+
+resource "aws_security_group_rule" "dle_instance_egress" {
+  security_group_id = aws_security_group.dle_instance_sg.id
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
 }
