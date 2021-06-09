@@ -38,7 +38,7 @@ resource "aws_lb_listener" "dle_api_ssl_listener" {
 # forward incoming requests and also sets up a health
 # check on the target instance.
 resource "aws_lb_target_group" "api_target_group" {
-  port     = 80
+  port     = 2345
   protocol = "HTTP"
   vpc_id   = aws_default_vpc.dle_vpc.id
 
@@ -66,5 +66,5 @@ resource "aws_lb_target_group" "api_target_group" {
 resource "aws_lb_target_group_attachment" "dle_instance_attachment" {
   target_group_arn = aws_lb_target_group.api_target_group.arn
   target_id        = aws_instance.aws_ec2.id
-  port             = 80
+  port             = 2345
 }
