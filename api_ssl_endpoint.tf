@@ -9,7 +9,7 @@
 
 # Create the Load Balancer for only the main DLE API
 resource "aws_lb" "dle_api_lb" {
-  name               = "dle-api-lb"
+  name               = "dle-api-lb-${var.dns_api_subdomain}"
   load_balancer_type = "application"
   security_groups    = [aws_security_group.dle_api_sg.id]
 

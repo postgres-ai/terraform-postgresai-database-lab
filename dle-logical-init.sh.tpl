@@ -2,7 +2,7 @@
 
 set -x
 
-disks=(${dle_disks}) 
+disks=(${dle_disks})
 for i in $${!disks[@]}; do
   sudo zpool create -f \
   -O compression=on \
@@ -11,10 +11,10 @@ for i in $${!disks[@]}; do
   -O logbias=throughput \
   -m /var/lib/dblab/dblab_pool_0$i\
   dblab_pool_0$i \
-  $${disks[$i]} 
+  $${disks[$i]}
 done
 
-mkdir ~/.dblab 
+mkdir ~/.dblab
 cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_timetable}\"/" ~/.dblab/server.yml
@@ -46,6 +46,36 @@ for i in {1..300}; do
   curl http://localhost:2345 > /dev/null 2>&1 && break || echo "dblab is not ready yet"
   sleep 1
 done
+
+### Setup cert for SSH login
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot certonly --standalone -d ${var.dns_api_subdomain}-engine
+
+####################################################################
+## This file should be written to:
+## /etc/letsencrypt/renewal-hooks/deploy/postgresql.deploy
+####################################################################
+# #!/bin/bash
+# umask 0177
+# export DOMAIN=example.com
+# export DATA_DIR=/var/lib/pgsql/data
+# cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem $DATA_DIR/server.crt
+# cp /etc/letsencrypt/live/$DOMAIN/privkey.pem   $DATA_DIR/server.key
+# chown postgres:postgres  $DATA_DIR/server.crt $DATA_DIR/server.key
+
+# Then make the above file executable so that certbot copies over new certs
+# sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/postgresql.deploy
+
+## change postgresql.conf to have:
+# # - SSL -
+# ssl = on
+# ssl_cert_file = 'server.crt'
+# ssl_key_file = 'server.key'
+# ssl_prefer_server_ciphers = on
+
+## change pg_hba.conf to have:
+# hostssl    all    all    0.0.0.0/0    md5
 
 dblab init \
  --environment-id=tutorial \
