@@ -3,6 +3,7 @@ resource "aws_volume_attachment" "ebs_att" {
   device_name= "${element(var.ec2_ebs_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.DLEVolume.*.id, count.index)}"
   instance_id = "${aws_instance.aws_ec2.id}"
+  force_detach = true
 }
 
 resource "aws_ebs_volume" "DLEVolume" {

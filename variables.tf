@@ -1,15 +1,15 @@
 variable "dle_ami_name" {
-    description = "Filter to use to find the DLE  AMI by name"
+    description = "Filter to be used to find a Database Lab AMI by name"
     default = "DBLABserver"
 }
 
 variable "dle_version_short" {
-   description = "DLE version in two numbers"
+   description = "2-digit DLE version (major version)"
    default = "2.3"
 }
 
 variable "dle_version_full" {
-   description = "DLE version in 3 numbers"
+   description = "3-digit DLE version (2-digit major + minor)"
    default = "2.3.1"
 }
 
@@ -58,22 +58,22 @@ variable "dns_api_subdomain" {
 }
 
 variable "availability_zone" {
-   description = "EBS volumes availability zone "
+   description = "AZ for EBS volumes"
    default = "us-east-1a"
 }
 
 variable "ebs_size" {
-   description = "EBS volumes size in Gb used by DLE"
+   description = "The size (GiB) for data volumes used by DLE"
    default = "1"
 }
 
 variable "ebs_type" {
-   description = "EBS volumes type used by DLE"
+   description = "EBS volume type used by DLE"
    default="gp2"
 }
 
 variable "ec2_ebs_names" {
-  description = "List of names for EBS volumes mouns"
+  description = "List of paths for EBS volumes mounts"
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
@@ -86,27 +86,27 @@ variable "postgres_source_dbname" {
 }
 
 variable "postgres_source_host" {
-  description = "Source postgres host"
+  description = "Source database host"
   default="localhost"
 }
 
 variable "postgres_source_port" {
-  description = "Source postgres port"
+  description = "Source database port"
   default="5432"
 }
 
 variable "postgres_source_username" {
-  description = "Source postgres username"
-  default="postgres"
+  description = "Source database username"
+  sensitive   = true
 }
 
 variable "postgres_source_password" {
-  description = "Source postgres username password"
-  default=""
+  description = "Source database password"
+  sensitive   = true
 }
 
 variable "postgres_source_version" {
-  description = "Source postgres version"
+  description = "Source PostgreSQL major version (examples: 9.6, 11, 14)"
   default="13"
 }
 
@@ -116,11 +116,11 @@ variable "dle_token" {
 }
 
 variable "dle_debug" {
-  description = "DLE debug mode enabled"
+  description = "DLE debug mode"
   default = "false"
 }
 
-variable "dle_timetable" {
+variable "dle_retrieval_refresh_timetable" {
   description = "DLE logical refresh timetable"
-  default = "0 0 * * 1"
+  default = "0 0 * * 0"
 }

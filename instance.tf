@@ -3,7 +3,7 @@ data "template_file" "init" {
   vars = {
     dle_token = "${var.dle_token}"
     dle_debug = "${var.dle_debug}"
-    dle_timetable = "${var.dle_timetable}"
+    dle_retrieval_refresh_timetable = "${var.dle_retrieval_refresh_timetable}"
     dle_disks = "${join(" ",var.ec2_ebs_names)}"
     dle_version_short = "${var.dle_version_short}"
     postgres_source_dbname = "${var.postgres_source_dbname}"
