@@ -1,0 +1,2 @@
+postgres_source_username="bfxuriuhcfpftt"
+postgres_source_password="dfe01cbd809a71efbaecafec5311a36b439460ace161627e5973e278dfe960b7"
