@@ -47,7 +47,7 @@ sudo docker run \
  --env DOCKER_API_VERSION=1.39 \
  --detach \
  --restart on-failure \
- postgresai/dblab-server:${dle_version_short}-latest
+ postgresai/dblab-server:${dle_version_full}
 
 ### Waiting for the Database Lab Engine initialization.
 for i in {1..30000}; do
