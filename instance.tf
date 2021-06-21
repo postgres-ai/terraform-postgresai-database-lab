@@ -24,4 +24,28 @@ resource "aws_instance" "aws_ec2" {
   key_name          = "${var.keypair}"
   tags              = "${local.common_tags}"
   user_data         = "${data.template_file.init.rendered}"
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${file("test.pem")}"
+    host        = "${self.public_ip}"
+  }
+
+  provisioner "file" {
+    source      = "example.com.key"
+    destination = "/tmp/example.com.key"
+  }
+  provisioner "file" {
+    source      = "postgres.example.com.csr"
+    destination = "/tmp/postgres.example.com.csr"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mv /tmp/example.com.key /etc/envoy/certs/",
+      "sudo mv /tmp/postgres.example.com.csr /etc/envoy/certs/",
+      "sudo systemctl enable envoy",
+      "sudo systemctl start envoy"
+    ]
+  }
 }
