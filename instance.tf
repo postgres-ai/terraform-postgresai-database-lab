@@ -24,11 +24,4 @@ resource "aws_instance" "aws_ec2" {
   key_name          = "${var.keypair}"
   tags              = "${local.common_tags}"
   user_data         = "${data.template_file.init.rendered}"
-
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    private_key = "${file("test.pem")}"
-    host        = "${self.public_ip}"
-  }
 }
