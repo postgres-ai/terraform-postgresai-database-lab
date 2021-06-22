@@ -3,6 +3,12 @@
 set -x
 
 sleep 20
+#runc certbot and copy files to envoy
+sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
+sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/
+sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/
+sudo systemctl enable envoy
+sudo systemctl start envoy
 
 disks=(${dle_disks}) 
 for i in $${!disks[@]}; do

@@ -31,22 +31,4 @@ resource "aws_instance" "aws_ec2" {
     private_key = "${file("test.pem")}"
     host        = "${self.public_ip}"
   }
-
-#  provisioner "file" {
-#    source      = "example.com.key"
-#    destination = "/tmp/example.com.key"
-#  }
-#  provisioner "file" {
-#    source      = "postgres.example.com.csr"
-#    destination = "/tmp/postgres.example.com.csr"
-#  }
-  provisioner "remote-exec" {
-    inline = [
-      "sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n",
-      "sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/",
-      "sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/",
-      "sudo systemctl enable envoy",
-      "sudo systemctl start envoy"
-    ]
-  }
 }
