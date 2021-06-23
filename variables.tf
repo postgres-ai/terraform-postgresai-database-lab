@@ -124,3 +124,22 @@ variable "dle_retrieval_refresh_timetable" {
   description = "DLE logical refresh timetable"
   default = "0 0 * * 0"
 }
+
+variable "platform_token" {
+  description = "Joe config App.platform.token value"
+}
+
+variable "joe_signing_secret" {
+  description = "Joe config App.joe_signing_secret.webui.credentials.signingSecret value"
+}
+
+variable "platform_project_name" {
+  description = "Joe config App.joe_signing_secret.webui.channels.project value"
+  default = "aws_test_tf"
+}
+
+variable "dle_url" {
+  description = "DLE URL accessible from postgres.ai platform"
+  type = string
+  default = "http://demo-api-engine.aws.postgres.ai:2345"
+}

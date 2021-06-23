@@ -16,3 +16,6 @@ postgres_source_version="13"
 dle_token="_token_"
 dle_debug="true"
 dle_retrieval_refresh_timetable="0 0 * * 0"
+platform_project_name="aws_test_tf"
+dle_url="http\\:\\/\\/demo-api-engine.aws.postgres.ai\\:2345"
+

@@ -3,13 +3,14 @@
 set -x
 
 sleep 20
-#runc certbot and copy files to envoy
+#run certbot and copy files to envoy
 sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
 sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/
 sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/
 sudo systemctl enable envoy
 sudo systemctl start envoy
 
+#create zfs pools
 disks=(${dle_disks}) 
 for i in $${!disks[@]}; do
   sudo zpool create -f \
@@ -22,6 +23,7 @@ for i in $${!disks[@]}; do
   $${disks[$i]} 
 done
 
+#configure and start DLE
 mkdir ~/.dblab 
 cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/server.yml
@@ -66,3 +68,13 @@ dblab init \
  --url=http://localhost:2345 \
  --token=_token_ \
  --insecure
+
+#configure and run Joe Bot container
+cp /home/ubuntu/joe.yml ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_token}/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(     token:.*$)/\1     token: ${dle_token}/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"${dle_url}\"/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${postgres_source_dbname}/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${joe_signing_secret}/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/joe.yml

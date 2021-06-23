@@ -13,6 +13,10 @@ data "template_file" "init" {
     postgres_source_username = "${var.postgres_source_username}"
     postgres_source_password = "${var.postgres_source_password}"
     postgres_source_version = "${var.postgres_source_version}"
+    platform_token = "${var.platform_token}"
+    joe_signing_secret = "${var.joe_signing_secret}" 
+    platform_project_name = "${var.platform_project_name}"
+    dle_url = "${var.dle_url}"
   }
 }
 

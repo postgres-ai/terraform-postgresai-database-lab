@@ -4,7 +4,7 @@ output "ip" {
 output "ec2instance" {
   value = "${aws_instance.aws_ec2.id}"
 }
-output "ec2_ublic_dns" {
+output "ec2_public_dns" {
   value = "${aws_instance.aws_ec2.public_dns}"
 }
 output "public_dns_name" {
