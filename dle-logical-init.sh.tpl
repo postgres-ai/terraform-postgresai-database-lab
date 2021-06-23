@@ -78,3 +78,11 @@ sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"${dle_url}\"/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${postgres_source_dbname}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${joe_signing_secret}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/joe.yml
+
+sudo docker run \
+    --name joe_bot \
+    --publish 2400:2400 \
+    --restart=on-failure \
+    --volume ~/.dblab/joe.yml:/home/config/config.yml \
+    --detach \
+postgresai/joe:latest
