@@ -1,9 +1,20 @@
 resource "aws_security_group" "dle_api_sg" {
   ingress {
     cidr_blocks = "${var.allow_api_from_cidrs}"
-
     from_port = 443
     to_port   = 443
+    protocol  = "tcp"
+  }
+  ingress {
+    cidr_blocks = "${var.allow_api_from_cidrs}"
+    from_port = 2345
+    to_port   = 2345
+    protocol  = "tcp"
+  }
+  ingress {
+    cidr_blocks = "${var.allow_api_from_cidrs}"
+    from_port = 2400
+    to_port   = 2400
     protocol  = "tcp"
   }
 
@@ -35,6 +46,15 @@ resource "aws_security_group_rule" "dle_instance_api" {
   type                      = "ingress"
   from_port                 = 2345
   to_port                   = 2345
+  protocol                  = "tcp"
+  source_security_group_id  = aws_security_group.dle_api_sg.id
+}
+
+resource "aws_security_group_rule" "joe_bot_api" {
+  security_group_id         = aws_security_group.dle_instance_sg.id
+  type                      = "ingress"
+  from_port                 = 2400
+  to_port                   = 2400
   protocol                  = "tcp"
   source_security_group_id  = aws_security_group.dle_api_sg.id
 }
