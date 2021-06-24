@@ -3,6 +3,12 @@
 set -x
 
 sleep 20
+#runc certbot and copy files to envoy
+sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
+sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/
+sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/
+sudo systemctl enable envoy
+sudo systemctl start envoy
 
 disks=(${dle_disks}) 
 for i in $${!disks[@]}; do
@@ -47,7 +53,7 @@ sudo docker run \
  --env DOCKER_API_VERSION=1.39 \
  --detach \
  --restart on-failure \
- postgresai/dblab-server:${dle_version_short}-latest
+ postgresai/dblab-server:${dle_version_full}
 
 ### Waiting for the Database Lab Engine initialization.
 for i in {1..30000}; do

@@ -4,3 +4,7 @@
 terraform.tfstate.backup
 .terraform.lock.hcl
 terraform.tfstate
+example.com.key
+postgres.example.com.csr
+test.pem
+

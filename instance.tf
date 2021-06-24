@@ -6,6 +6,7 @@ data "template_file" "init" {
     dle_retrieval_refresh_timetable = "${var.dle_retrieval_refresh_timetable}"
     dle_disks = "${join(" ",var.ec2_ebs_names)}"
     dle_version_short = "${var.dle_version_short}"
+    dle_version_full = "${var.dle_version_full}"
     postgres_source_dbname = "${var.postgres_source_dbname}"
     postgres_source_host = "${var.postgres_source_host}"
     postgres_source_port = "${var.postgres_source_port}"
