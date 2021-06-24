@@ -26,8 +26,8 @@ You can learn more about using Terraform and the Terraform CLI [here](https://ww
 Please note that:
 
 * You can override default parameters (defined in `variables.tf`) either with the CLI or by creating a file called `terraform.tfvars` in the module root directory
-* This module currently configures the Database Lab Engine (DLE) to use [Logical Replication](https://postgres.ai/docs/guides/data/rds). Physical replication (and other DLE configuration options) are planned, but not currently supported by this module.
-* All variables starting with `postgres_` represent the connection information for the database to be replicated by the Database Lab Engine.  That database must be accessible from the instance hosting the DLE.
+* This module currently configures the Database Lab Engine (DLE) to use ["logical" provisioning mode](https://postgres.ai/docs/guides/data/rds) (dump/restore). "Physical" provisioning (copying data directory from the source or fetching it from archives) and other DLE configuration options are planned, but not currently supported by this module.
+* All variables starting with `postgres_` represent the database connection information for the data (from that database) to be fetched by the Database Lab Engine. That database must be accessible from the instance hosting the DLE.
 * Errors and other debugging information is logged to `/to/fill/location` on the EC2 instance hosting the DLE.
 
 ### Database Lab Engine
