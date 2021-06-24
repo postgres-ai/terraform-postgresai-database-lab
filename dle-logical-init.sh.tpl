@@ -4,8 +4,8 @@ set -x
 
 sleep 20
 #run certbot and copy files to envoy
-sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
-# to avoid restrinctions from letsencript like "There were too many requests of a given type :: Error creating new order :: too many certificates (5) already issued for this exact set of domains in the last 168 hours: demo-api-engine.aws.postgres.ai: see https://letsencrypt.org/docs/rate-limits/" follwing two lines were commented out and mocked up. In real implementation inline certs have to be removed and letsencrypt generated certs should be used
+# to avoid restrinctions from letsencrypt like "There were too many requests of a given type :: Error creating new order :: too many certificates (5) already issued for this exact set of domains in the last 168 hours: demo-api-engine.aws.postgres.ai: see https://letsencrypt.org/docs/rate-limits/" follwing three lines were commented out and mocked up. In real implementation inline certs have to be removed and letsencrypt generated certs should be used
+#sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
 #sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/
 #sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/
 cat <<EOF > /etc/envoy/certs/fullchain1.pem
