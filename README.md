@@ -66,7 +66,7 @@ example.com.   CAA   0 issue "letsencrypt.org"
 You can get help deploying the DLE.  Here are two great ways to do this:
 
 * Join the [Database Lab Community Slack](https://database-lab-team.slack.com)
-* Reach out to the Postgres.ai team on [Intercom](https://postgres.ai/)
+* Reach out to the Postgres.ai team on [Intercom chat widget](https://postgres.ai/) (located at the bottom right corner)
 
 ## Reporting Issues & Contributing
 We want to make deploying and managing the Database Lab Engine as easy as possible!  Please report bugs
