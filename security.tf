@@ -47,7 +47,8 @@ resource "aws_security_group_rule" "dle_instance_api" {
   from_port                 = 2345
   to_port                   = 2345
   protocol                  = "tcp"
-  source_security_group_id  = aws_security_group.dle_api_sg.id
+  #source_security_group_id  = aws_security_group.dle_api_sg.id
+  cidr_blocks       = "${var.allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "joe_bot_api" {
@@ -56,7 +57,8 @@ resource "aws_security_group_rule" "joe_bot_api" {
   from_port                 = 2400
   to_port                   = 2400
   protocol                  = "tcp"
-  source_security_group_id  = aws_security_group.dle_api_sg.id
+  #source_security_group_id  = aws_security_group.dle_api_sg.id
+  cidr_blocks       = "${var.allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "dle_instance_http_cert_auth" {

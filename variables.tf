@@ -112,7 +112,6 @@ variable "postgres_source_version" {
 
 variable "dle_token" {
   description = "DLE verification token"
-  default = "_token_"
 }
 
 variable "dle_debug" {
