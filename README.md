@@ -10,7 +10,7 @@ Supported Cloud Platforms:
 ## Prerequisites
 * [AWS Account](https://aws.amazon.com)
 * [Terraform Installed](https://learn.hashicorp.com/tutorials/terraform/install-cli) (min version 1.0.0)
-* AWS [Route 53](https://aws.amazon.com/route53/) Hosted Zone (For setting up TLS)
+* AWS [Route 53](https://aws.amazon.com/route53/) Hosted Zone (For setting up TLS) for a domain or sub-domain you control.
 
 ## Setup
 * You must have AWS Access Keys and a default region in your Terraform environment (See section on required IAM Permissions).
@@ -28,7 +28,7 @@ Please note that:
 * You can override default parameters (defined in `variables.tf`) either with the CLI or by creating a file called `terraform.tfvars` in the module root directory
 * This module currently configures the Database Lab Engine (DLE) to use ["logical" provisioning mode](https://postgres.ai/docs/guides/data/rds) (dump/restore). "Physical" provisioning (copying data directory from the source or fetching it from archives) and other DLE configuration options are planned, but not currently supported by this module.
 * All variables starting with `postgres_` represent the database connection information for the data (from that database) to be fetched by the Database Lab Engine. That database must be accessible from the instance hosting the DLE.
-* Errors and other debugging information is logged to `/to/fill/location` on the EC2 instance hosting the DLE.
+* You can view the DLE log by running `sudo docker logs --since 1m -f dblab_server` when ssh'ed to the instance.  See [here](https://postgres.ai/docs/guides/administration/engine-manage#observe-database-lab-engine-logs) for more information.
 
 ### Database Lab Engine
 Once your EC2 instance is running and the Database Lab Engine (DLE) is deployed, you can learn more about how to use the DLE
