@@ -112,6 +112,7 @@ variable "postgres_source_version" {
 
 variable "dle_token" {
   description = "DLE verification token"
+  default = ""
 }
 
 variable "dle_debug" {
@@ -130,6 +131,7 @@ variable "platform_token" {
 
 variable "joe_signing_secret" {
   description = "Joe config App.joe_signing_secret.webui.credentials.signingSecret value"
+  default = ""
 }
 
 variable "platform_project_name" {
