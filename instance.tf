@@ -14,6 +14,14 @@ resource "random_string" "joe_signing_secret" {
   special = false
 }
 
+resource "random_string" "ci_observer_token" {
+  length  = 32
+  upper   = true
+  lower   = true
+  number  = true
+  special = false
+}
+
 data "template_file" "init" {
   template = "${file("dle-logical-init.sh.tpl")}"
   vars = {
@@ -23,6 +31,7 @@ data "template_file" "init" {
     dle_disks = "${join(" ",var.ec2_ebs_names)}"
     dle_version_short = "${var.dle_version_short}"
     dle_version_full = "${var.dle_version_full}"
+    dle_url = "${var.dle_url}"
     postgres_source_dbname = "${var.postgres_source_dbname}"
     postgres_source_host = "${var.postgres_source_host}"
     postgres_source_port = "${var.postgres_source_port}"
@@ -30,9 +39,9 @@ data "template_file" "init" {
     postgres_source_password = "${var.postgres_source_password}"
     postgres_source_version = "${var.postgres_source_version}"
     platform_token = "${var.platform_token}"
-    joe_signing_secret = "${random_string.joe_signing_secret.result}" 
     platform_project_name = "${var.platform_project_name}"
-    dle_url = "${var.dle_url}"
+    joe_signing_secret = "${random_string.joe_signing_secret.result}" 
+    ci_observer_token = "${random_string.ci_observer_token.result}"
   }
 }
 

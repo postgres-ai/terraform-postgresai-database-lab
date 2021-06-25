@@ -137,3 +137,18 @@ sudo docker run \
     --volume ~/.dblab/joe.yml:/home/config/config.yml \
     --detach \
 postgresai/joe:latest
+
+#configure and run CI Observer
+cp /home/ubuntu/run_ci.yaml ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${ci_observer_token}/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  verificationToken: "dle_cerification_token".*$)/\1  verificationToken: ${dle_token}/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_token}/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${github_vcs_secret_token}/" ~/.dblab/run_ci.yaml
+
+sudo docker run --name dblab_ci_checker --rm -it --detach \
+--network=host \
+--volume /var/run/docker.sock:/var/run/docker.sock \
+--volume /tmp:/tmp \
+--volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
+registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:240-run-ci

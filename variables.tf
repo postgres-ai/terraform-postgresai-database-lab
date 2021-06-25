@@ -144,3 +144,7 @@ variable "dle_url" {
   type = string
   default = "http://demo-api-engine.aws.postgres.ai:2345"
 }
+
+variable "github_vcs_secret_token" {
+  description = "GITHUB token used for github actions"
+}
