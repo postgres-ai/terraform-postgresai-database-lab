@@ -18,6 +18,13 @@ resource "aws_security_group" "dle_api_sg" {
     protocol  = "tcp"
   }
 
+  ingress {
+    cidr_blocks = "${var.allow_api_from_cidrs}"
+    from_port = 2500
+    to_port   = 2500
+    protocol  = "tcp"
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -61,14 +68,15 @@ resource "aws_security_group_rule" "joe_bot_api" {
   cidr_blocks       = "${var.allow_api_from_cidrs}"
 }
 
-#resource "aws_security_group_rule" "dle_instance_http_cert_auth" {
-#  security_group_id         = aws_security_group.dle_instance_sg.id
-#  type                      = "ingress"
-#  from_port                 = 80
-#  to_port                   = 80
-#  protocol                  = "tcp"
-#  cidr_blocks               = ["0.0.0.0/0"]
-#}
+resource "aws_security_group_rule" "ci_observer_api" {
+  security_group_id         = aws_security_group.dle_instance_sg.id
+  type                      = "ingress"
+  from_port                 = 445
+  to_port                   = 445
+  protocol                  = "tcp"
+  #source_security_group_id  = aws_security_group.dle_api_sg.id
+  cidr_blocks       = "${var.allow_api_from_cidrs}"
+}
 
 resource "aws_security_group_rule" "dle_instance_clones" {
   security_group_id = aws_security_group.dle_instance_sg.id

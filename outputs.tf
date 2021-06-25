@@ -16,3 +16,6 @@ output "dle_verification_token" {
 output "joe_signing_secret" {
   value = "${random_string.joe_signing_secret.result}"
 }
+output "ci_observer_token" {
+  value = "${random_string.ci_observer_token.result}"
+}

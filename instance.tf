@@ -42,6 +42,7 @@ data "template_file" "init" {
     platform_project_name = "${var.platform_project_name}"
     joe_signing_secret = "${random_string.joe_signing_secret.result}" 
     ci_observer_token = "${random_string.ci_observer_token.result}"
+    github_vcs_secret_token = "${var.github_vcs_secret_token}"
   }
 }
 
