@@ -1,5 +1,5 @@
 resource "random_string" "dle_token" {
-  length  = 16
+  length  = 32
   upper   = true
   lower   = true
   number  = true
