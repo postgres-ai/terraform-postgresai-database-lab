@@ -132,7 +132,7 @@ sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/jo
 
 sudo docker run \
     --name joe_bot \
-    --publish 2400:2400 \
+    --network=host \
     --restart=on-failure \
     --volume ~/.dblab/joe.yml:/home/config/config.yml \
     --detach \
