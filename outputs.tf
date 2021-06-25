@@ -8,7 +8,7 @@ output "ec2_public_dns" {
   value = "${aws_instance.aws_ec2.public_dns}"
 }
 output "public_dns_name" {
-  value = "${join("", aws_route53_record.dblab_clones_subdomain.*.fqdn)}"
+  value = "${join("", aws_route53_record.dblab_subdomain.*.fqdn)}"
 }
 output "dle_verification_token" {
   value = "${random_string.dle_token.result}"
