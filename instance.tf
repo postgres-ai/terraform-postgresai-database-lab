@@ -7,7 +7,7 @@ resource "random_string" "dle_token" {
 }
 
 resource "random_string" "joe_signing_secret" {
-  length  = 16
+  length  = 32
   upper   = true
   lower   = true
   number  = true
