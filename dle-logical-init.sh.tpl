@@ -145,7 +145,9 @@ sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToke
 sed -ri "s/^(\s*)(  verificationToken: "dle_cerification_token".*$)/\1  verificationToken: ${dle_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${github_vcs_secret_token}/" ~/.dblab/run_ci.yaml
-
+# TODO:
+# - use the image registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:2.4.0
+# - change the /tmp mounting to /tmp/ci_checker:/tmp/ci_checker because of security reasons
 sudo docker run --name dblab_ci_checker --rm -it --detach \
 --network=host \
 --volume /var/run/docker.sock:/var/run/docker.sock \
