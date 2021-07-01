@@ -28,6 +28,9 @@ sleep 20
 # sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/envoy.deploy
 #
 # # <END certbot generated cert>
+#
+# FIXME
+# 1. Write script to edit the `/etc/envoy/envoy.yaml` file so that it replaces the wildcard domains with specific domain
 
 
 cat <<EOF > /etc/envoy/certs/fullchain1.pem
