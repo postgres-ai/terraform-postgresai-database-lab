@@ -117,7 +117,7 @@ done
 dblab init \
  --environment-id=tutorial \
  --url=http://localhost:2345 \
- --token=_token_ \
+ --token=${dle_token} \
  --insecure
 
 #configure and run Joe Bot container
