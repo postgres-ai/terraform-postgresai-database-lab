@@ -77,6 +77,7 @@ variable "ec2_ebs_names" {
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
+    "/dev/xvdh",
   ]
 }
 
@@ -122,7 +123,7 @@ variable "dle_debug" {
 
 variable "dle_retrieval_refresh_timetable" {
   description = "DLE logical refresh timetable"
-  default = "0 0 * * 0"
+  default = "0 0 * * *"
 }
 
 variable "platform_token" {
