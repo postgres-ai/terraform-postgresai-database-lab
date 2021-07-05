@@ -135,12 +135,16 @@ variable "platform_project_name" {
   default = "aws_test_tf"
 }
 
-variable "dle_url" {
-  description = "DLE URL accessible from postgres.ai platform"
-  type = string
-  default = "http://demo-api-engine.aws.postgres.ai:2345"
-}
+#variable "dle_url" {
+#  description = "DLE URL accessible from postgres.ai platform"
+#  type = string
+#  default = "http://demo-api-engine.aws.postgres.ai:2345"
+#}
 
 variable "github_vcs_secret_token" {
   description = "GITHUB token used for github actions"
+}
+
+variable "postgres_config_shared_preload_libraries" {
+  description = "shared_preload_libraries postgresql.conf parameter value for clones"
 }
