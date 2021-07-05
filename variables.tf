@@ -3,11 +3,6 @@ variable "dle_ami_name" {
     default = "DBLABserver"
 }
 
-variable "dle_version_short" {
-   description = "2-digit DLE version (major version)"
-   default = "2.3"
-}
-
 variable "dle_version_full" {
    description = "3-digit DLE version (2-digit major + minor)"
    default = "2.3.1"

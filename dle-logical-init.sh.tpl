@@ -76,7 +76,8 @@ done
 
 #configure and start DLE
 mkdir ~/.dblab 
-cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
+#cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(forceInit:.*$)/\1forceInit: true/" ~/.dblab/server.yml
