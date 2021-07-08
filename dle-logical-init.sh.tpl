@@ -92,7 +92,15 @@ sed -ri "s/:13/:${postgres_source_version}/g"  ~/.dblab/server.yml
 sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(          shared_preload_libraries:.*$)/\1          shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(- logicalRestore.*$)/\1#- logicalRestore /" ~/.dblab/server.yml
+# Enable Platform
+sed -ri "s/^(\s*)(#platform:$)/\1platform: /" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(#  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\"$)/\1  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\" /" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(#  accessToken: \"platform_access_token\"$)/\1  accessToken: \"${platform_token}\"/" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(#  enablePersonalTokens: true$)/\1  enablePersonalTokens: true/" ~/.dblab/server.yml
 
 
 sudo docker run \
@@ -140,18 +148,19 @@ sudo docker run \
 postgresai/joe:latest
 
 #configure and run CI Observer
-cp /home/ubuntu/run_ci.yaml ~/.dblab/run_ci.yaml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/master/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${ci_observer_token}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  verificationToken: "dle_cerification_token".*$)/\1  verificationToken: ${dle_token}/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  url: \"https://dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verificationToken: ${dle_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${github_vcs_secret_token}/" ~/.dblab/run_ci.yaml
+
 # TODO:
 # - use the image registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:2.4.0
-# - change the /tmp mounting to /tmp/ci_checker:/tmp/ci_checker because of security reasons
-sudo docker run --name dblab_ci_checker --rm -it --detach \
---network=host \
+sudo docker run --name dblab_ci_checker -it --detach \
+--publish 2500:2500 \
 --volume /var/run/docker.sock:/var/run/docker.sock \
---volume /tmp:/tmp \
+--volume /tmp/ci_checker:/tmp/ci_checker \
 --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:240-run-ci
+registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:master
