@@ -22,3 +22,6 @@ output "joe_signing_secret" {
 output "ci_observer_token" {
   value = "${random_string.ci_observer_token.result}"
 }
+output "ci_observer_url_for_registration" {
+  value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_clones_subdomain.*.fqdn),"445")}"
+}
