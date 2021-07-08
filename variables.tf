@@ -3,11 +3,6 @@ variable "dle_ami_name" {
     default = "DBLABserver"
 }
 
-variable "dle_version_short" {
-   description = "2-digit DLE version (major version)"
-   default = "2.3"
-}
-
 variable "dle_version_full" {
    description = "3-digit DLE version (2-digit major + minor)"
    default = "2.3.1"
@@ -77,6 +72,7 @@ variable "ec2_ebs_names" {
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
+    "/dev/xvdh",
   ]
 }
 
@@ -122,7 +118,7 @@ variable "dle_debug" {
 
 variable "dle_retrieval_refresh_timetable" {
   description = "DLE logical refresh timetable"
-  default = "0 0 * * 0"
+  default = "0 0 * * *"
 }
 
 variable "platform_token" {
@@ -139,8 +135,16 @@ variable "platform_project_name" {
   default = "aws_test_tf"
 }
 
-variable "dle_url" {
-  description = "DLE URL accessible from postgres.ai platform"
-  type = string
-  default = "http://demo-api-engine.aws.postgres.ai:2345"
+#variable "dle_url" {
+#  description = "DLE URL accessible from postgres.ai platform"
+#  type = string
+#  default = "http://demo-api-engine.aws.postgres.ai:2345"
+#}
+
+variable "github_vcs_secret_token" {
+  description = "GITHUB token used for github actions"
+}
+
+variable "postgres_config_shared_preload_libraries" {
+  description = "shared_preload_libraries postgresql.conf parameter value for clones"
 }

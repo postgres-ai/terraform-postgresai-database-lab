@@ -4,7 +4,7 @@ data "aws_ami" "ami" {
 
   filter {
     name   = "name"
-    values = ["${format("%s-%s*", var.dle_ami_name, var.dle_version_full)}"]
+    values = ["${var.dle_ami_name}"]
   }
   filter {
     name   = "root-device-type"
