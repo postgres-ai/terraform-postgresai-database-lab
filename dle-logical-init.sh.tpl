@@ -147,20 +147,18 @@ sudo docker run \
     --detach \
 postgresai/joe:latest
 
-#configure and run CI Observer
+#configure and run DB Migration Checker
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/master/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${ci_observer_token}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  url: \"https://dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" ~/.dblab/run_ci.yaml
+sed -ri "s/^(\s*)(  url: \"https\\:\\/\\/dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verificationToken: ${dle_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${github_vcs_secret_token}/" ~/.dblab/run_ci.yaml
 
-# TODO:
-# - use the image registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:2.4.0
 sudo docker run --name dblab_ci_checker -it --detach \
 --publish 2500:2500 \
 --volume /var/run/docker.sock:/var/run/docker.sock \
 --volume /tmp/ci_checker:/tmp/ci_checker \
 --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:master
+postgresai/dblab-ci-checker:2.4.0
