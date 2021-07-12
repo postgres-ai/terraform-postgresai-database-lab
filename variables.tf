@@ -5,7 +5,7 @@ variable "dle_ami_name" {
 
 variable "dle_version_full" {
    description = "3-digit DLE version (2-digit major + minor)"
-   default = "2.3.1"
+   default = "2.4.0"
 }
 
 variable "aws_region" {
