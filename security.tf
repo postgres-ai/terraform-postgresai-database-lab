@@ -1,25 +1,25 @@
 resource "aws_security_group" "dle_api_sg" {
   ingress {
-    cidr_blocks = "${var.allow_api_from_cidrs}"
+    cidr_blocks = "${var.aws_deploy_allow_api_from_cidrs}"
     from_port = 443
     to_port   = 443
     protocol  = "tcp"
   }
   ingress {
-    cidr_blocks = "${var.allow_api_from_cidrs}"
+    cidr_blocks = "${var.aws_deploy_allow_api_from_cidrs}"
     from_port = 2345
     to_port   = 2345
     protocol  = "tcp"
   }
   ingress {
-    cidr_blocks = "${var.allow_api_from_cidrs}"
+    cidr_blocks = "${var.aws_deploy_allow_api_from_cidrs}"
     from_port = 2400
     to_port   = 2400
     protocol  = "tcp"
   }
 
   ingress {
-    cidr_blocks = "${var.allow_api_from_cidrs}"
+    cidr_blocks = "${var.aws_deploy_allow_api_from_cidrs}"
     from_port = 2500
     to_port   = 2500
     protocol  = "tcp"
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "dle_instance_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = "${var.allow_ssh_from_cidrs}"
+  cidr_blocks       = "${var.aws_deploy_allow_ssh_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "dle_instance_api" {
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "dle_instance_api" {
   to_port                   = 443
   protocol                  = "tcp"
   #source_security_group_id  = aws_security_group.dle_api_sg.id
-  cidr_blocks       = "${var.allow_api_from_cidrs}"
+  cidr_blocks       = "${var.aws_deploy_allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "joe_bot_api" {
@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "joe_bot_api" {
   to_port                   = 444
   protocol                  = "tcp"
   #source_security_group_id  = aws_security_group.dle_api_sg.id
-  cidr_blocks       = "${var.allow_api_from_cidrs}"
+  cidr_blocks       = "${var.aws_deploy_allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "ci_observer_api" {
@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "ci_observer_api" {
   to_port                   = 445
   protocol                  = "tcp"
   #source_security_group_id  = aws_security_group.dle_api_sg.id
-  cidr_blocks       = "${var.allow_api_from_cidrs}"
+  cidr_blocks       = "${var.aws_deploy_allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "dle_instance_clones" {
@@ -84,7 +84,7 @@ resource "aws_security_group_rule" "dle_instance_clones" {
   from_port         = 9000
   to_port           = 9999
   protocol          = "tcp"
-  cidr_blocks       = "${var.allow_ssh_from_cidrs}"
+  cidr_blocks       = "${var.aws_deploy_allow_ssh_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "dle_instance_egress" {
