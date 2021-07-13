@@ -1,27 +1,27 @@
-output "ip" {
+output "aws_ec2_instance_ip" {
   value = "${aws_instance.aws_ec2.public_ip}"
 }
-output "ec2instance" {
+output "aws_ec2_instance_id" {
   value = "${aws_instance.aws_ec2.id}"
 }
-output "ec2_public_dns" {
+output "aws_ec2_instance_dns" {
   value = "${aws_instance.aws_ec2.public_dns}"
 }
-output "dle_url_for_registration" {
+output "platform_dle_registration_url" {
   value = "${format("%s://%s", "https",join("", aws_route53_record.dblab_clones_subdomain.*.fqdn))}"
 }
-output "joe_url_for_registration" {
+output "platform_joe_registration_url" {
   value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_clones_subdomain.*.fqdn),"444")}"
 }
 output "dle_verification_token" {
-  value = "${random_string.dle_token.result}"
+  value = "${random_string.dle_verification_token.result}"
 }
-output "joe_signing_secret" {
-  value = "${random_string.joe_signing_secret.result}"
+output "platform_joe_signing_secret" {
+  value = "${random_string.platform_joe_signing_secret.result}"
 }
-output "ci_observer_token" {
-  value = "${random_string.ci_observer_token.result}"
+output "vcs_db_migration_checker_verification_token" {
+  value = "${random_string.vcs_db_migration_checker_verification_token.result}"
 }
-output "ci_observer_url_for_registration" {
+output "vcs_db_migration_checker_registration_url" {
   value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_clones_subdomain.*.fqdn),"445")}"
 }

@@ -9,7 +9,7 @@
 
 
 data "aws_route53_zone" "dblab_zone" {
-  name = var.dns_zone_name
+  name = var.aws_deploy_dns_zone_name
 }
 
 ###
@@ -20,7 +20,7 @@ data "aws_route53_zone" "dblab_zone" {
 # resource should be close to correct.
 #
 #resource "aws_route53_record" "dblab_api_subdomain_caa" {
-#  name = var.dns_zone_name
+#  name = var.aws_deploy_dns_zone_name
 #  type = "CAA"
 #
 #  records = [
@@ -35,7 +35,7 @@ data "aws_route53_zone" "dblab_zone" {
 #}
 
 resource "aws_route53_record" "dblab_api_subdomain" {
-  name = var.dns_api_subdomain
+  name = var.aws_deploy_dns_api_subdomain
   type = "CNAME"
 
   records = [
@@ -47,7 +47,7 @@ resource "aws_route53_record" "dblab_api_subdomain" {
 }
 
 resource "aws_acm_certificate" "dblab_api_subdomain_cert" {
-  domain_name       = "${var.dns_api_subdomain}.${var.dns_zone_name}"
+  domain_name       = "${var.aws_deploy_dns_api_subdomain}.${var.aws_deploy_dns_zone_name}"
   validation_method = "DNS"
 
   lifecycle {

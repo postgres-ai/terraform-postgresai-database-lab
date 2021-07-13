@@ -14,7 +14,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
 - [Terraform Installed](https://learn.hashicorp.com/tutorials/terraform/install-cli) (minimal version: 1.0.0)
 - AWS [Route 53](https://aws.amazon.com/route53/) Hosted Zone (For setting up TLS) for a domain or sub-domain you control
 - You must have AWS Access Keys and a default region in your Terraform environment (See section on required IAM Permissions)
-- The DLE runs on an EC2 instance which can be accessed using a selected set of SSH keys uploaded to EC2. Use the Terraform parameter `keypair` to specify which EC2 Keypair to use
+- The DLE runs on an EC2 instance which can be accessed using a selected set of SSH keys uploaded to EC2. Use the Terraform parameter `aws_keypair` to specify which EC2 Keypair to use
 - Required IAM Permissions: to successfully run this Terraform module, the IAM User/Role must have the following permissions:
     * Read/Write permissions on EC2
     * Read/Write permissions on Route53
@@ -33,8 +33,8 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
 ## Quick start
 The following steps were tested on Ubuntu 20.04 but supposed to be valid for other Linux distributions without significant modification.
 
- 1. SSH to any machine with internet access, it will be used as deployment machine
- 1. Install Terraform  https://learn.hashicorp.com/tutorials/terraform/install-cli. Example for Ubuntu:
+1. SSH to any machine with internet access, it will be used as deployment machine
+1. Install Terraform  https://learn.hashicorp.com/tutorials/terraform/install-cli. Example for Ubuntu:
     ```shell
     sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl 
     curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
@@ -43,39 +43,45 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     # Verify installation.
     terraform -help
     ```
- 1. Get TF code for Database Lab:
+1. Get TF code for Database Lab:
     ```shell
     git clone https://gitlab.com/postgres-ai/database-lab-infrastructure.git
     cd database-lab-infrastructure/
     ```
- 1. Edit `terraform.tfvars` file. In our example, we will use Heroku demo database as a source:
-    ```shell
-    dle_ami_name = "DBLABserver*"
-    dle_version_full = "2.3.3"
-    aws_region = "us-east-2"
-    instance_type = "t2.large"
-    keypair = "postgres_ext_test"
-    allow_ssh_from_cidrs = ["0.0.0.0/0"]
-    tag_name = "DBLABserver-ec2instance"
-    availability_zone="us-east-2a"
-    ebs_size="40"
-    ebs_type="gp2"
-    postgres_source_dbname="d3dljqkrnopdvg"
-    postgres_source_host="ec2-3-215-57-87.compute-1.amazonaws.com"
-    postgres_source_port="5432"
-    postgres_source_version="13"
-    postgres_config_shared_preload_libraries="pg_stat_statements"
-    dle_debug="true"
+1. Edit `terraform.tfvars` file. In our example, we will use Heroku demo database as a source:
+    ```config
+    dle_version_full = "2.4.0"
+
+    aws_ami_name = "DBLABserver*"
+    aws_keypair = "YOUR_AWS_KEYPAIR"
+
+    aws_deploy_region = "us-east-1"
+    aws_deploy_ebs_availability_zone="us-east-1a"
+    aws_deploy_ec2_instance_type = "t2.large"
+    aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
+    aws_deploy_ebs_size="40"
+    aws_deploy_ebs_type="gp2"
+    aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
+    aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
+
+    source_postgres_version="13"
+    source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
+    source_postgres_port="5432"
+    source_postgres_dbname="d3dljqkrnopdvg"
+    source_postgres_username="postgres"
+
+    dle_debug_mode="true"
     dle_retrieval_refresh_timetable="0 0 * * 0"
+    postgres_config_shared_preload_libraries="pg_stat_statements"
+
     platform_project_name="aws_test_tf"
-    dns_api_subdomain="tf-test" #subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres.ai
     ```
-1. Create `secret.tfvars` containing `postgres_source_password`, `platform_token`, and `github_vcs_secret_token`. An example:
-    ```shell
-    postgres_source_username="postgres"    # todo: move to regular tfvars
-    postgres_source_password="password"
-    platform_token="platform_token" # from https://console.postgres.ai/postgres-ai-team/tokens  # todo your org
-    github_vcs_secret_token="vcs_secret_token"  # todo: how to get it?
+1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
+    ```config
+    source_postgres_password="YOUR_DB_PASSWORD" # todo: put pwd for heroku example DB here
+    platform_access_token="YOUR_ACCESS_TOKEN"   # to generate, open https://console.postgres.ai/, choose your organization,
+                                                # then "Access tokens" in the left menu
+    vcs_github_secret_token="vcs_secret_token"  # to generate, open https://github.com/settings/tokens/new
     ```
 1. Initialize
     ```shell
@@ -91,13 +97,13 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     terraform  apply -var-file="secret.tfvars" -auto-approve
     ```
 1. If everything goes well, you should get an output like this:
-    ```
-    ci_observer_token = "gsio7KmgaxECfJ80kUx2tUeIf4kEXZex"
+    ```config
+    vcs_db_migration_checker_verification_token = "gsio7KmgaxECfJ80kUx2tUeIf4kEXZex"
     dle_verification_token = "zXPodd13LyQaKgVXGmSCeB8TUtnGNnIa"
     ec2_public_dns = "ec2-18-118-126-25.us-east-2.compute.amazonaws.com"
     ec2instance = "i-0b07738148950af25"
     ip = "18.118.126.25"
-    joe_signing_secret = "lG23qZbUh2kq0ULIBfW6TRwKzqGZu1aP"
+    platform_joe_signing_secret = "lG23qZbUh2kq0ULIBfW6TRwKzqGZu1aP"
     public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
     ```
 
@@ -122,7 +128,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     <img src="/uploads/8371e7f79de199aa017ff2df82b8f704/image.png" width="400" />
  1. Add Joe chatbot for efficient SQL optimization workflow:
     1. Go to the "SQL Optimization > Ask Joe" page using the left menu, click the "Add instance" button, specify the same project as you defined in the previous step
-    1. `Signing secret` – use `joe_signing_secret` from the Terraform output
+    1. `Signing secret` – use `platform_joe_signing_secret` from the Terraform output
     1. `URL` – use `public_dns_name` values from the Terraform output with port `444`; in our example, it's `https://demo-api-engine.aws.postgres.ai:444`
     1. Press "Verify URL" to check connectivity and then press "Add". You should see:
     <img src="/uploads/252e5f74cd324fc4df301bbf7c2bdd25/image.png" width="400" />

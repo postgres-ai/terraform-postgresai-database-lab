@@ -1,5 +1,5 @@
 resource "aws_route53_record" "dblab_clones_subdomain" {
-  name = "${var.dns_api_subdomain}-engine"
+  name = "${var.aws_deploy_dns_api_subdomain}-engine"
   type = "CNAME"
 
   # TODO -- Allocate an Elastic IP address for the instance rather than using the
