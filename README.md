@@ -21,6 +21,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
     * Read/Write permissions on Cloudwatch
 
 ## How to use
+- :construction: Currently, it is supposed that you run `terraform` commands on a Linux machine. MacOS and Windows support is not yet implemented (but planned).
 - It is recommended to clone this Git repository and adjust for your needs. Below we provide the detailed step-by-step instructions for quick start (see "Quick start") for a PoC setup
 - To configure parameters used by Terraform (and the Database Lab Engine itself), you will need to modify `terraform.tfvars` and create a file with secrets (`secret.tfvars`)
 - This Terraform module can be run independently or combined with any other standard Terraform module. You can learn more about using Terraform and the Terraform CLI [here](https://www.terraform.io/docs/cli/commands/index.html)
