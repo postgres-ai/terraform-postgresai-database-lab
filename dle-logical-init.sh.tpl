@@ -13,14 +13,14 @@ sleep 20
 
 # <START certbot generated cert>
 #
-#sudo certbot certonly --standalone -d ${dns_api_subdomain}.${dns_zone_name} -m m@m.com --agree-tos -n
-#sudo cp /etc/letsencrypt/live/${dns_api_subdomain}.${dns_zone_name}/fullchain.pem /etc/envoy/certs/fullchain1.pem
-#sudo cp /etc/letsencrypt/live/${dns_api_subdomain}.${dns_zone_name}/privkey.pem /etc/envoy/certs/privkey1.pem
+#sudo certbot certonly --standalone -d ${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name} -m m@m.com --agree-tos -n
+#sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/fullchain.pem /etc/envoy/certs/fullchain1.pem
+#sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/privkey.pem /etc/envoy/certs/privkey1.pem
 
 # cat <<EOF > /etc/letsencrypt/renewal-hooks/deploy/envoy.deploy
 # #!/bin/bash
 # umask 0177
-# export DOMAIN=${dns_api_subdomain}.${dns_zone_name}
+# export DOMAIN=${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}
 # export DATA_DIR=/etc/envoy/certs/
 # cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem $DATA_DIR/fullchain1.pem
 # cp /etc/letsencrypt/live/$DOMAIN/privkey.pem   $DATA_DIR/privkey1.pem
