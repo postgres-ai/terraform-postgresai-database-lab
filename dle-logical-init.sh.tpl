@@ -159,7 +159,7 @@ cp /home/ubuntu/joe.yml ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_access_token}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(     token:.*$)/\1     token: ${dle_verification_token}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"http\\:\\/\\/${aws_deploy_dns_api_subdomain}-engine.aws.postgres.ai\\:2345\"/" ~/.dblab/joe.yml
+sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"http\\:\\/\\/localhost\\:2345\"/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${platform_joe_signing_secret}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/joe.yml
