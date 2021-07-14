@@ -10,7 +10,7 @@ aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
 aws_deploy_ebs_size="40"
 aws_deploy_ebs_type="gp2"
 aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
-aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
+aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}.aws.postgres.ai
 
 source_postgres_version="13"
 source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
