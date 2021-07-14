@@ -9,11 +9,11 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "${var.aws_region}"
+  region = "${var.aws_deploy_region}"
 }
 
 locals {
   common_tags = {
-    Name = "${var.tag_name}"
+    Name = "${var.aws_deploy_ec2_instance_tag_name}"
   }
 }

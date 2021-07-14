@@ -9,7 +9,7 @@
 
 
 data "aws_route53_zone" "dblab_zone" {
-  name = var.dns_zone_name
+  name = var.aws_deploy_dns_zone_name
 }
 
 ###
@@ -20,7 +20,7 @@ data "aws_route53_zone" "dblab_zone" {
 # resource should be close to correct.
 #
 #resource "aws_route53_record" "dblab_subdomain_caa" {
-#  name = var.dns_zone_name
+#  name = var.aws_deploy_dns_zone_name
 #  type = "CAA"
 #
 #  records = [
@@ -36,7 +36,7 @@ data "aws_route53_zone" "dblab_zone" {
 #}
 
 resource "aws_route53_record" "dblab_subdomain" {
-  name = var.dns_api_subdomain
+  name = var.aws_deploy_dns_api_subdomain
   type = "CNAME"
 
   # TODO -- Allocate an Elastic IP address for the instance rather than using the

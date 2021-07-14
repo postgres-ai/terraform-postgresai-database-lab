@@ -1,10 +1,10 @@
 data "aws_ami" "ami" {
   most_recent      = true
-  owners           = ["${var.ami_owner}"]
+  owners           = ["${var.aws_ami_owner}"]
 
   filter {
     name   = "name"
-    values = ["${format("%s-%s*", var.dle_ami_name, var.dle_version_full)}"]
+    values = ["${var.aws_ami_name}"]
   }
   filter {
     name   = "root-device-type"

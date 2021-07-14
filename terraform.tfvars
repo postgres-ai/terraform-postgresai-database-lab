@@ -1,20 +1,25 @@
-dle_ami_name = "DBLABserver"
-dle_version_short = "2.3"
-dle_version_full = "2.3.1"
-aws_region = "us-east-2"
-instance_type = "t2.large"
-keypair = "postgres_ext_test"
-allow_ssh_from_cidrs = ["0.0.0.0/0"]
-tag_name = "DBLABserver-ec2instance"
-availability_zone="us-east-2a"
-ebs_size="40"
-ebs_type="gp2"
-postgres_source_dbname="d3dljqkrnopdvg"
-postgres_source_host="ec2-3-215-57-87.compute-1.amazonaws.com"
-postgres_source_port="5432"
-postgres_source_version="13"
-dle_debug="true"
-dle_retrieval_refresh_timetable="0 0 * * 0"
-platform_project_name="aws_test_tf"
-dle_url="http\\:\\/\\/demo-api-engine.aws.postgres.ai\\:2345"
+dle_version_full = "2.4.0"
 
+aws_ami_name = "DBLABserver*"
+aws_keypair = "YOUR_AWS_KEYPAIR"
+
+aws_deploy_region = "us-east-1"
+aws_deploy_ebs_availability_zone="us-east-1a"
+aws_deploy_ec2_instance_type = "t2.large"
+aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
+aws_deploy_ebs_size="40"
+aws_deploy_ebs_type="gp2"
+aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
+aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
+
+source_postgres_version="13"
+source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
+source_postgres_port="5432"
+source_postgres_dbname="d3dljqkrnopdvg"
+source_postgres_username="postgres"
+
+dle_debug_mode="true"
+dle_retrieval_refresh_timetable="0 0 * * 0"
+postgres_config_shared_preload_libraries="pg_stat_statements"
+
+platform_project_name="aws_test_tf"
