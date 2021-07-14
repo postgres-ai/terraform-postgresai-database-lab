@@ -4,7 +4,7 @@
 
 This [Terraform Module](https://www.terraform.io/docs/language/modules/index.html) is responsible for deploying the [Database Lab Engine](https://gitlab.com/postgres-ai/database-lab) to cloud hosting providers.
 
-Your source PostgreSQL database can be located anywhere, but DLE with other components will be created on an EC2 instance under your AWS account. Currently, only "logical" mode of data retrieval (dump/restore) is supported – the only available method for managed PostgreSQL cloud services such as RDS Postgres, RDS Aurora Postgres, Azure Postgres, or Heroku. "Physical" mode is not yet supported, but it will be in the future. More about various data retrieval options for DLE: https://postgres.ai/docs/how-to-guides/administration/ata.
+Your source PostgreSQL database can be located anywhere, but DLE with other components will be created on an EC2 instance under your AWS account. Currently, only "logical" mode of data retrieval (dump/restore) is supported – the only available method for managed PostgreSQL cloud services such as RDS Postgres, RDS Aurora Postgres, Azure Postgres, or Heroku. "Physical" mode is not yet supported, but it will be in the future. More about various data retrieval options for DLE: https://postgres.ai/docs/how-to-guides/administration/data.
 
 ## Supported Cloud Platforms:
 - AWS
