@@ -52,6 +52,11 @@ variable "aws_deploy_dns_api_subdomain" {
     default = "demo-api"
 }
 
+variable "aws_deploy_certificate_email" {
+    description = "The admin email address to use when when requesting a certificate from Let's Encrypt"
+    default = "m@m.com"
+}
+
 variable "aws_deploy_ebs_availability_zone" {
    description = "AZ for EBS volumes"
    default = "us-east-1a"

@@ -13,7 +13,7 @@ sleep 20
 
 # <START certbot generated cert>
 #
-#sudo certbot certonly --standalone -d ${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name} -m m@m.com --agree-tos -n
+#sudo certbot certonly --standalone -d ${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name} -m ${aws_deploy_certificate_email} --agree-tos -n
 #sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/fullchain.pem /etc/envoy/certs/fullchain1.pem
 #sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/privkey.pem /etc/envoy/certs/privkey1.pem
 
