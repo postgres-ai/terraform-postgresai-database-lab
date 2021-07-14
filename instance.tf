@@ -30,7 +30,9 @@ data "template_file" "init" {
     dle_retrieval_refresh_timetable = "${var.dle_retrieval_refresh_timetable}"
     dle_disks = "${join(" ",var.aws_deploy_ec2_volumes_names)}"
     dle_version_full = "${var.dle_version_full}"
+    aws_deploy_dns_zone_name = "${var.aws_deploy_dns_zone_name}"
     aws_deploy_dns_api_subdomain = "${var.aws_deploy_dns_api_subdomain}"
+    aws_deploy_certificate_email = "{var.aws_deploy_certificate_email}"
     source_postgres_dbname = "${var.source_postgres_dbname}"
     source_postgres_host = "${var.source_postgres_host}"
     source_postgres_port = "${var.source_postgres_port}"
@@ -40,7 +42,7 @@ data "template_file" "init" {
     postgres_config_shared_preload_libraries = "${var.postgres_config_shared_preload_libraries}"
     platform_access_token = "${var.platform_access_token}"
     platform_project_name = "${var.platform_project_name}"
-    platform_joe_signing_secret = "${random_string.platform_joe_signing_secret.result}" 
+    platform_joe_signing_secret = "${random_string.platform_joe_signing_secret.result}"
     vcs_db_migration_checker_verification_token = "${random_string.vcs_db_migration_checker_verification_token.result}"
     vcs_github_secret_token = "${var.vcs_github_secret_token}"
   }

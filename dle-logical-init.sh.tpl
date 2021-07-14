@@ -4,10 +4,35 @@ set -x
 
 sleep 20
 #run certbot and copy files to envoy
-# to avoid restrinctions from letsencrypt like "There were too many requests of a given type :: Error creating new order :: too many certificates (5) already issued for this exact set of domains in the last 168 hours: demo-api-engine.aws.postgres.ai: see https://letsencrypt.org/docs/rate-limits/" follwing three lines were commented out and mocked up. In real implementation inline certs have to be removed and letsencrypt generated certs should be used
-#sudo certbot certonly --standalone -d demo-api-engine.aws.postgres.ai -m m@m.com --agree-tos -n
-#sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/fullchain1.pem /etc/envoy/certs/
-#sudo cp /etc/letsencrypt/archive/demo-api-engine.aws.postgres.ai/privkey1.pem /etc/envoy/certs/
+# to avoid restrinctions from letsencrypt like "There were too many requests of a given type ::
+# Error creating new order :: too many certificates (5) already issued for this exact set of domains
+# in the last 168 hours: demo-api-engine.aws.postgres.ai: see https://letsencrypt.org/docs/rate-limits/"
+# follwing three lines were commented out and mocked up. In real implementation inline certs have to be
+# removed and letsencrypt generated certs should be used
+
+
+# <START certbot generated cert>
+#
+#sudo certbot certonly --standalone -d ${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name} -m ${aws_deploy_certificate_email} --agree-tos -n
+#sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/fullchain.pem /etc/envoy/certs/fullchain1.pem
+#sudo cp /etc/letsencrypt/live/${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}/privkey.pem /etc/envoy/certs/privkey1.pem
+
+# cat <<EOF > /etc/letsencrypt/renewal-hooks/deploy/envoy.deploy
+# #!/bin/bash
+# umask 0177
+# export DOMAIN=${aws_deploy_dns_api_subdomain}.${aws_deploy_dns_zone_name}
+# export DATA_DIR=/etc/envoy/certs/
+# cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem $DATA_DIR/fullchain1.pem
+# cp /etc/letsencrypt/live/$DOMAIN/privkey.pem   $DATA_DIR/privkey1.pem
+# EOF
+# sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/envoy.deploy
+#
+# # <END certbot generated cert>
+#
+# FIXME
+# 1. Write script to edit the `/etc/envoy/envoy.yaml` file so that it replaces the wildcard domains with specific domain
+
+
 cat <<EOF > /etc/envoy/certs/fullchain1.pem
 -----BEGIN CERTIFICATE-----
 MIICqDCCAZACCQCquzpHNpqBcDANBgkqhkiG9w0BAQsFADAWMRQwEgYDVQQDDAtm
@@ -62,7 +87,7 @@ sudo systemctl enable envoy
 sudo systemctl start envoy
 
 #create zfs pools
-disks=(${dle_disks}) 
+disks=(${dle_disks})
 for i in $${!disks[@]}; do
   sudo zpool create -f \
   -O compression=on \
@@ -71,11 +96,11 @@ for i in $${!disks[@]}; do
   -O logbias=throughput \
   -m /var/lib/dblab/dblab_pool_0$i\
   dblab_pool_0$i \
-  $${disks[$i]} 
+  $${disks[$i]}
 done
 
 #configure and start DLE
-mkdir ~/.dblab 
+mkdir ~/.dblab
 #cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
