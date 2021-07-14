@@ -186,4 +186,4 @@ sudo docker run --name dblab_ci_checker -it --detach \
 --volume /var/run/docker.sock:/var/run/docker.sock \
 --volume /tmp/ci_checker:/tmp/ci_checker \
 --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-postgresai/dblab-ci-checker:2.4.0
+postgresai/dblab-ci-checker:2.4.1
