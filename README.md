@@ -73,7 +73,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 
     dle_debug_mode = "true"
     dle_retrieval_refresh_timetable = "0 0 * * 0"
-    postgres_config_shared_preload_libraries = "pg_stat_statements" # add "logerrors" to the list here (comma-separated) if you'll use DB Migration Checker
+    postgres_config_shared_preload_libraries = "pg_stat_statements,logerrors" # DB Migration Checker requires logerrors extension
 
     platform_project_name = "aws_test_tf"
     ```
