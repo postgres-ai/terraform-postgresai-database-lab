@@ -168,6 +168,10 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
         ...
     }
     ```
+1. Once you're done, do not forget to tear down all the AWS resources:
+    ```shell
+    terraform destroy
+    ```
 
 ## Important Note
 When the DLE creates new database clones, it makes them available on incremental ports in the 6000 range (e.g. 6000, 6001, ...). The DLE CLI will also report that the clone is available on a port in the 6000 range.  However, please note that these are the ports when accessing the DLE from `localhost`.  This Terraform module deploys [Envoy](https://www.envoyproxy.io/) to handle SSL termination and port forwarding to connect to DLE generated clones.
