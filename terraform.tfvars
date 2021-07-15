@@ -15,7 +15,7 @@ aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will
 source_postgres_version="13"
 source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
 source_postgres_port="5432"
-source_postgres_dbname="d3dljqkrnopdvg"
+source_postgres_dbname="d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
 source_postgres_username="postgres"
 
 dle_debug_mode="true"
