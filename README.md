@@ -68,7 +68,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     source_postgres_version="13"
     source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
     source_postgres_port="5432"
-    source_postgres_dbname="d3dljqkrnopdvg"
+    source_postgres_dbname="d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
     source_postgres_username="postgres"
 
     dle_debug_mode="true"
@@ -108,7 +108,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
     ```
 
-1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the terraform output. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
+1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
     ```shell
     echo "sudo docker logs dblab_server -f" | ssh ubuntu@18.118.126.25 -i postgres_ext_test.pem
     ```
@@ -137,10 +137,19 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     Now you can start using Joe chatbot for SQL execution plans troubleshooting and verification of optimization ideas. As a quick test, go to `SQL Optimization > Ask Joe` in the left menu, and enter `\dt+` command (a psql command to show the list of tables with sizes). You should see how Joe created a thin clone behind the scenes and immediately ran this psql command, presenting the result to you:
     <img src="/uploads/d9e9e1fdafb0ded3504691cec9018868/image.png" width="400" />
 
-1. TODO: CI checker  !!!!!!
+1. Set up [DB migration checker](https://postgres.ai/docs/db-migration-checker). Prepare a repository with your DB migrations(Flyway, Sqitch, Liquibase, etc.):
+   1. Add secrets:
+      - `DLMC_CI_ENDPOINT` - an endpoint of your Database Lab Migration Checker service – use `vcs_db_migration_checker_registration_url` from the Terraform output
+      - `DLMC_VERIFICATION_TOKEN` - verification token for the Database Lab Migration Checker API – use `vcs_db_migration_checker_verification_token` from the Terraform output
+   1. Configure a new workflow in the created repository (see an example of configuration: https://github.com/postgres-ai/green-zone/blob/master/.github/workflows/main.yml)
+      - add a custom action: https://github.com/marketplace/actions/database-lab-realistic-db-testing-in-ci
+      - provide input params for the action (the full list of available input params)
+      - provide environment variables:
+        - `DLMC_CI_ENDPOINT` - use a CI Checker endpoint from the repository secrets
+        - `DLMC_VERIFICATION_TOKEN` - use a verification token from the repository secrets
 
 1. Install and try the client CLI (`dblab`)
-    1. TODO: install CLI !!!!!
+    1. Follow the [guide](https://postgres.ai/docs/how-to-guides/cli/cli-install-init) to install Database Lab CLI
     1. Initialize CLI:
     ```shell
     dblab init --environment-id=<ANY NAME FOR ENVIRONMENT> --url=https://<public_dns_name> --token=<your_personal_token_from_postgres_ai_platform>
