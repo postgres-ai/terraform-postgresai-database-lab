@@ -57,32 +57,32 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     aws_keypair = "YOUR_AWS_KEYPAIR"
 
     aws_deploy_region = "us-east-1"
-    aws_deploy_ebs_availability_zone="us-east-1a"
+    aws_deploy_ebs_availability_zone = "us-east-1a"
     aws_deploy_ec2_instance_type = "t2.large"
     aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
-    aws_deploy_ebs_size="40"
-    aws_deploy_ebs_type="gp2"
+    aws_deploy_ebs_size = "40"
+    aws_deploy_ebs_type = "gp2"
     aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
-    aws_deploy_dns_api_subdomain="tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
+    aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
 
-    source_postgres_version="13"
-    source_postgres_host="ec2-3-215-57-87.compute-1.amazonaws.com"
-    source_postgres_port="5432"
-    source_postgres_dbname="d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
-    source_postgres_username="postgres"
+    source_postgres_version = "13"
+    source_postgres_host = "ec2-3-215-57-87.compute-1.amazonaws.com"
+    source_postgres_port = "5432"
+    source_postgres_dbname = "d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
+    source_postgres_username = "postgres"
 
-    dle_debug_mode="true"
-    dle_retrieval_refresh_timetable="0 0 * * 0"
-    postgres_config_shared_preload_libraries="pg_stat_statements"
+    dle_debug_mode = "true"
+    dle_retrieval_refresh_timetable = "0 0 * * 0"
+    postgres_config_shared_preload_libraries = "pg_stat_statements" # add "logerrors" to the list here (comma-separated) if you'll use DB Migration Checker
 
-    platform_project_name="aws_test_tf"
+    platform_project_name = "aws_test_tf"
     ```
 1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
     ```config
-    source_postgres_password="YOUR_DB_PASSWORD" # todo: put pwd for heroku example DB here
-    platform_access_token="YOUR_ACCESS_TOKEN"   # to generate, open https://console.postgres.ai/, choose your organization,
+    source_postgres_password = "YOUR_DB_PASSWORD" # todo: put pwd for heroku example DB here
+    platform_access_token = "YOUR_ACCESS_TOKEN"   # to generate, open https://console.postgres.ai/, choose your organization,
                                                 # then "Access tokens" in the left menu
-    vcs_github_secret_token="vcs_secret_token"  # to generate, open https://github.com/settings/tokens/new
+    vcs_github_secret_token = "vcs_secret_token"  # to generate, open https://github.com/settings/tokens/new
     ```
 1. Initialize
     ```shell
@@ -90,8 +90,8 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Set environment variables with AWS credentials:
     ```shell
-    export AWS_ACCESS_KEY_ID="keyid"  # todo: how to get it?
-    export AWS_SECRET_ACCESS_KEY="accesskey"
+    export AWS_ACCESS_KEY_ID = "keyid"  # todo: how to get it?
+    export AWS_SECRET_ACCESS_KEY = "accesskey"
     ```
 1. Deploy:
     ```
