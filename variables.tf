@@ -69,7 +69,7 @@ variable "aws_deploy_ebs_size" {
 
 variable "aws_deploy_ebs_type" {
    description = "EBS volume type used by DLE"
-   default="gp2"
+   default = "gp2"
 }
 
 variable "aws_deploy_ec2_volumes_names" {
@@ -83,17 +83,17 @@ variable "aws_deploy_ec2_volumes_names" {
 
 variable "source_postgres_dbname" {
   description = "Source database name"
-  default="dbname"
+  default = "dbname"
 }
 
 variable "source_postgres_host" {
   description = "Source database host"
-  default="localhost"
+  default = "localhost"
 }
 
 variable "source_postgres_port" {
   description = "Source database port"
-  default="5432"
+  default = "5432"
 }
 
 variable "source_postgres_username" {
@@ -108,7 +108,7 @@ variable "source_postgres_password" {
 
 variable "source_postgres_version" {
   description = "Source PostgreSQL major version (examples: 9.6, 11, 14)"
-  default="13"
+  default = "13"
 }
 
 variable "dle_verification_token" {
