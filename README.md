@@ -20,7 +20,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
     * Read/Write permissions on Route53
     * Read/Write permissions on Cloudwatch
 
-## How to use
+## Configuration overview
 - :construction: Currently, it is supposed that you run `terraform` commands on a Linux machine. MacOS and Windows support is not yet implemented (but planned).
 - It is recommended to clone this Git repository and adjust for your needs. Below we provide the detailed step-by-step instructions for quick start (see "Quick start") for a PoC setup
 - To configure parameters used by Terraform (and the Database Lab Engine itself), you will need to modify `terraform.tfvars` and create a file with secrets (`secret.tfvars`)
@@ -31,7 +31,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
     - values passed on the command line
 - All variables starting with `postgres_` represent the source database connection information for the data (from that database) to be fetched by the DLE. That database must be accessible from the instance hosting the DLE (that one created by Terraform)
 
-## Quick start
+## How-to guide: using this Terraform module to set up DLE and its components
 The following steps were tested on Ubuntu 20.04 but supposed to be valid for other Linux distributions without significant modification.
 
 1. SSH to any machine with internet access, it will be used as deployment machine
@@ -65,12 +65,23 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
     aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
 
-    source_postgres_version = "13"
-    source_postgres_host = "ec2-3-215-57-87.compute-1.amazonaws.com"
-    source_postgres_port = "5432"
-    source_postgres_dbname = "d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
-    source_postgres_username = "postgres"
+    # Source – two options. Choose one of two:
+    #    - direct connection to source DB
+    #    - dump stored on AWS S3
 
+    # option 1 – direct PG connection
+    source_type = "postgres" # source is working dome postgres database
+    source_postgres_version = "13"
+    source_postgres_host = "ec2-3-215-57-87.compute-1.amazonaws.com" # an example DB at Heroku
+    source_postgres_port = "5432"
+    source_postgres_dbname = "d3dljqkrnopdvg" # an example DB at Heroku
+    source_postgres_username = "bfxuriuhcfpftt" # an example DB at Heroku
+    
+    # option 2 – dump on S3. Important: your AWS user has to be able to create IAM roles to work with S3 buckets in your AWS account
+    # source_type = 's3' # source is dump stored on demo s3 bucket
+    # source_pgdump_s3_bucket = "tf-demo-dump" # This is an example public bucket
+    # source_pgdump_path_on_s3_bucket = "heroku.dmp" # This is an example dump from demo database
+    
     dle_debug_mode = "true"
     dle_retrieval_refresh_timetable = "0 0 * * 0"
     postgres_config_shared_preload_libraries = "pg_stat_statements,logerrors" # DB Migration Checker requires logerrors extension
@@ -79,7 +90,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
     ```config
-    source_postgres_password = "YOUR_DB_PASSWORD" # todo: put pwd for heroku example DB here
+    source_postgres_password = "dfe01cbd809a71efbaecafec5311a36b439460ace161627e5973e278dfe960b7" # an example DB at Heroku
     platform_access_token = "YOUR_ACCESS_TOKEN"   # to generate, open https://console.postgres.ai/, choose your organization,
                                                 # then "Access tokens" in the left menu
     vcs_github_secret_token = "vcs_secret_token"  # to generate, open https://github.com/settings/tokens/new
@@ -94,16 +105,16 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     export AWS_SECRET_ACCESS_KEY = "accesskey"
     ```
 1. Deploy:
-    ```
+    ```shell
     terraform  apply -var-file="secret.tfvars" -auto-approve
     ```
 1. If everything goes well, you should get an output like this:
     ```config
     vcs_db_migration_checker_verification_token = "gsio7KmgaxECfJ80kUx2tUeIf4kEXZex"
     dle_verification_token = "zXPodd13LyQaKgVXGmSCeB8TUtnGNnIa"
-    ec2_public_dns = "ec2-18-118-126-25.us-east-2.compute.amazonaws.com"
-    ec2instance = "i-0b07738148950af25"
-    ip = "18.118.126.25"
+    ec2_public_dns = "ec2-11-111-111-11.us-east-2.compute.amazonaws.com"
+    ec2instance = "i-0000000000000"
+    ip = "11.111.111.11"
     platform_joe_signing_secret = "lG23qZbUh2kq0ULIBfW6TRwKzqGZu1aP"
     public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
     ```
