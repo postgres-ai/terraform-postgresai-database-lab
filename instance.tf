@@ -45,6 +45,10 @@ data "template_file" "init" {
     platform_joe_signing_secret = "${random_string.platform_joe_signing_secret.result}"
     vcs_db_migration_checker_verification_token = "${random_string.vcs_db_migration_checker_verification_token.result}"
     vcs_github_secret_token = "${var.vcs_github_secret_token}"
+    source_type = "${var.source_type}"
+    source_pgdump_s3_bucket = "${var.source_pgdump_s3_bucket}"
+    source_pgdump_s3_mount_point = "${var.source_pgdump_s3_mount_point}"
+    source_pgdump_path_on_s3_bucket = "${var.source_pgdump_path_on_s3_bucket}"
   }
 }
 
@@ -55,5 +59,6 @@ resource "aws_instance" "aws_ec2" {
   security_groups   = ["${aws_security_group.dle_instance_sg.name}"]
   key_name          = "${var.aws_keypair}"
   tags              = "${local.common_tags}"
+  iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
   user_data         = "${data.template_file.init.rendered}"
 }

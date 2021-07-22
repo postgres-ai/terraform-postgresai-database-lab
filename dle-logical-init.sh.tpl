@@ -99,34 +99,48 @@ for i in $${!disks[@]}; do
   $${disks[$i]}
 done
 
-#configure and start DLE
+# Adjust DLE config
 mkdir ~/.dblab
-#cp /home/ubuntu/.dblab/config.example.logical_generic.yml ~/.dblab/server.yml
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(forceInit:.*$)/\1forceInit: true/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(host: 34.56.78.90$)/\1host: ${source_postgres_host}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(port: 5432$)/\1port: ${source_postgres_port}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(            username: postgres$)/\1            username: ${source_postgres_username}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(password:.*$)/\1password: ${source_postgres_password}/" ~/.dblab/server.yml
-sed -ri "s/:13/:${source_postgres_version}/g"  ~/.dblab/server.yml
-#restore pg_dump via pipe -  without saving it on the disk
-sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(          shared_preload_libraries:.*$)/\1          shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(- logicalRestore.*$)/\1#- logicalRestore /" ~/.dblab/server.yml
 # Enable Platform
 sed -ri "s/^(\s*)(#platform:$)/\1platform: /" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(#  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\"$)/\1  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\" /" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(#  accessToken: \"platform_access_token\"$)/\1  accessToken: \"${platform_access_token}\"/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(#  enablePersonalTokens: true$)/\1  enablePersonalTokens: true/" ~/.dblab/server.yml
+sed -ri "s/:13/:${source_postgres_version}/g"  ~/.dblab/server.yml
 
+case "${source_type}" in 
+
+  postgres)
+  sed -ri "s/^(\s*)(host: 34.56.78.90$)/\1host: ${source_postgres_host}/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(port: 5432$)/\1port: ${source_postgres_port}/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(            username: postgres$)/\1            username: ${source_postgres_username}/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(password:.*$)/\1password: ${source_postgres_password}/" ~/.dblab/server.yml
+  #restore pg_dump via pipe -  without saving it on the disk
+  sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(          shared_preload_libraries:.*$)/\1          shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(- logicalRestore.*$)/\1#- logicalRestore /" ~/.dblab/server.yml
+  ;;
+
+  s3)
+  # Mount S3 bucket if it's defined in Terraform variables
+  mkdir -p "${source_pgdump_s3_mount_point}"
+  s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o use_cache=/tmp -o allow_other
+  
+  sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" ~/.dblab/server.yml
+  sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" ~/.dblab/server.yml
+  ;;
+
+esac
 
 sudo docker run \
  --name dblab_server \

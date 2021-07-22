@@ -147,3 +147,24 @@ variable "vcs_github_secret_token" {
 variable "postgres_config_shared_preload_libraries" {
   description = "shared_preload_libraries postgresql.conf parameter value for clones"
 }
+
+variable "source_type" {
+  description = "Type of data source used for DLE. For now it can be postgres,S3"
+  default = ""
+}
+
+variable "source_pgdump_s3_bucket" {
+  description = "S3 bucket name where a dump (created using pg_dump) is stored. This dump will be used as data source. Leave the value empty (default) to use a different source of data."
+  default = ""
+}
+
+variable "source_pgdump_path_on_s3_bucket" {
+  description = "relative path to pg_dump file or directory"
+  default = ""
+}
+
+variable "source_pgdump_s3_mount_point"{
+  description = "mount point on DLE EC2 instance where S3 bucket with the source dump file/directory is mounted to. If pgdump_s3_bucket is empty, pgdump_s3_mount_point is ignored"
+  default = "/s3/pg_dump"
+}
+
