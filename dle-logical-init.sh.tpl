@@ -134,7 +134,7 @@ case "${source_type}" in
   s3)
   # Mount S3 bucket if it's defined in Terraform variables
   mkdir -p "${source_pgdump_s3_mount_point}"
-  s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o use_cache=/tmp -o allow_other
+  s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o allow_other
   
   sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" ~/.dblab/server.yml
   sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" ~/.dblab/server.yml
@@ -151,6 +151,7 @@ sudo docker run \
  --volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump \
  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
+ --volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point} \
  --env DOCKER_API_VERSION=1.39 \
  --detach \
  --restart on-failure \
