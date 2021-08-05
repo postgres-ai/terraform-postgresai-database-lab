@@ -32,7 +32,7 @@ data "template_file" "init" {
     dle_version_full = "${var.dle_version_full}"
     aws_deploy_dns_zone_name = "${var.aws_deploy_dns_zone_name}"
     aws_deploy_dns_api_subdomain = "${var.aws_deploy_dns_api_subdomain}"
-    aws_deploy_certificate_email = "{var.aws_deploy_certificate_email}"
+    aws_deploy_certificate_email = "${var.aws_deploy_certificate_email}"
     source_postgres_dbname = "${var.source_postgres_dbname}"
     source_postgres_host = "${var.source_postgres_host}"
     source_postgres_port = "${var.source_postgres_port}"

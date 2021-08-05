@@ -150,7 +150,7 @@ variable "postgres_config_shared_preload_libraries" {
 
 variable "source_type" {
   description = "Type of data source used for DLE. For now it can be postgres,S3"
-  default = ""
+  default = "postgres"
 }
 
 variable "source_pgdump_s3_bucket" {
