@@ -100,8 +100,12 @@ for i in $${!disks[@]}; do
 done
 
 # Adjust DLE config
-mkdir ~/.dblab
+mkdir -p ~/.dblab/postgres_conf/
+
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/pg_hba.conf --output ~/.dblab/postgres_conf/pg_hba.conf
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/postgresql.conf --output ~/.dblab/postgres_conf/postgresql.conf
+
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
@@ -136,6 +140,8 @@ case "${source_type}" in
   mkdir -p "${source_pgdump_s3_mount_point}"
   s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o allow_other
   
+  s3_mount="--volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point}"
+ 
   sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" ~/.dblab/server.yml
   sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" ~/.dblab/server.yml
   ;;
@@ -151,7 +157,8 @@ sudo docker run \
  --volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump \
  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
- --volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point} \
+ --volume ~/.dblab/postgres_conf/:/home/dblab/configs/postgres/:rshared
+ $s3_mount \
  --env DOCKER_API_VERSION=1.39 \
  --detach \
  --restart on-failure \
@@ -163,6 +170,8 @@ for i in {1..30000}; do
   sleep 10
 done
 
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/scripts/cli_install.sh | bash
+sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 dblab init \
  --environment-id=tutorial \
  --url=http://localhost:2345 \
