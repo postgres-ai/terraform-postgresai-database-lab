@@ -112,6 +112,7 @@ sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(forceInit:.*$)/\1forceInit: true/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" ~/.dblab/server.yml
+sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: ${postgres_dump_parallelJobs}/" ~/.dblab/server.yml
 # Enable Platform
 sed -ri "s/^(\s*)(#platform:$)/\1platform: /" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(#  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\"$)/\1  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\" /" ~/.dblab/server.yml
@@ -158,7 +159,6 @@ sudo docker run \
  --volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump \
  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
- --volume ~/.dblab/postgres_conf/:/home/dblab/configs/postgres/:rshared
  --mount type=bind,source=/root/.dblab/postgres_conf,target=/home/dblab/configs/postgres \
  $s3_mount \
  --env DOCKER_API_VERSION=1.39 \
