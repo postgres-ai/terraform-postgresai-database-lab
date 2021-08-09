@@ -105,6 +105,7 @@ mkdir -p ~/.dblab/postgres_conf/
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/pg_hba.conf --output ~/.dblab/postgres_conf/pg_hba.conf
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/postgresql.conf --output ~/.dblab/postgres_conf/postgresql.conf
+cat /tmp/postgresql_clones_custom.conf >> ~/.dblab/postgres_conf/postgresql.conf
 
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
@@ -158,6 +159,7 @@ sudo docker run \
  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
  --volume ~/.dblab/postgres_conf/:/home/dblab/configs/postgres/:rshared
+ --mount type=bind,source=/root/.dblab/postgres_conf,target=/home/dblab/configs/postgres \
  $s3_mount \
  --env DOCKER_API_VERSION=1.39 \
  --detach \

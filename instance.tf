@@ -61,4 +61,16 @@ resource "aws_instance" "aws_ec2" {
   tags              = "${local.common_tags}"
   iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
   user_data         = "${data.template_file.init.rendered}"
+
+  provisioner "file" {
+    source      = "postgresql_clones_custom.conf"
+    destination = "/tmp/postgresql_clones_custom.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = "${file("ubuntu.pem")}"
+      host        = "${self.public_dns}"
+    }
+  }
 }
