@@ -93,8 +93,11 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     source_postgres_password = "dfe01cbd809a71efbaecafec5311a36b439460ace161627e5973e278dfe960b7" # an example DB at Heroku
     platform_access_token = "YOUR_ACCESS_TOKEN"   # to generate, open https://console.postgres.ai/, choose your organization,
                                                 # then "Access tokens" in the left menu
-    vcs_github_secret_token = "vcs_secret_token"  # to generate, open https://github.com/settings/tokens/new
+    vcs_github_secret_token = "vcs_secret_token"  # generate a personal access token with scope of "repo"
     ```
+    To generate a personal GitHub access token with the scope of "repo", open the [guide on GitHub Docs](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) and follow the instructions.
+    
+    Note that the "repo" scope essentially gives full access to all user-controlled repositories. Should you have any concerns about which repositories the DLE can have access to, consider using a separate GitHub account that has access to the reduced number of repositories.
 1. Initialize
     ```shell
     terraform init
