@@ -149,7 +149,7 @@ variable "postgres_config_shared_preload_libraries" {
 }
 
 variable "source_type" {
-  description = "Type of data source used for DLE. For now it can be postgres,S3"
+  description = "Type of data source used for DLE. For now it can be postgres or S3"
   default = "postgres"
 }
 
@@ -168,3 +168,7 @@ variable "source_pgdump_s3_mount_point"{
   default = "/s3/pg_dump"
 }
 
+variable "postgres_dump_parallelJobs"{
+  description = "DLE config parallelJobs parameter value"
+  default = "2"
+}
