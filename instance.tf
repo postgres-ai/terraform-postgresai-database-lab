@@ -40,6 +40,7 @@ data "template_file" "init" {
     source_postgres_password = "${var.source_postgres_password}"
     source_postgres_version = "${var.source_postgres_version}"
     postgres_config_shared_preload_libraries = "${var.postgres_config_shared_preload_libraries}"
+    postgres_dump_parallel_jobs = "${var.postgres_dump_parallel_jobs}"
     platform_access_token = "${var.platform_access_token}"
     platform_project_name = "${var.platform_project_name}"
     platform_joe_signing_secret = "${random_string.platform_joe_signing_secret.result}"
@@ -61,4 +62,16 @@ resource "aws_instance" "aws_ec2" {
   tags              = "${local.common_tags}"
   iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
   user_data         = "${data.template_file.init.rendered}"
+
+  provisioner "file" {
+    source      = "postgresql_clones_custom.conf"
+    destination = "/tmp/postgresql_clones_custom.conf"
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = "${file("ubuntu.pem")}"
+      host        = "${self.public_dns}"
+    }
+  }
 }
