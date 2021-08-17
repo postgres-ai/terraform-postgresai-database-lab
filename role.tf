@@ -1,6 +1,6 @@
 resource "aws_iam_role" "db_lab_engine_role" {
   count = "${var.source_type == "s3" ? 1 : 0}"
-  name               = "database_lab_engine"
+  name_prefix = "database_lab_engine_"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -35,8 +35,9 @@ resource "aws_iam_role" "db_lab_engine_role" {
     })
   }
 }
+
 resource "aws_iam_instance_profile" "instance_profile" {
-    count = "${var.source_type == "s3" ? 1 : 0}"
-    name = "dle-instance-profile"
-    role = "${aws_iam_role.db_lab_engine_role[0].name}"
+  count = "${var.source_type == "s3" ? 1 : 0}"
+  name_prefix = "dle_instance_profile_"
+  role = "${aws_iam_role.db_lab_engine_role[0].name}"
 }

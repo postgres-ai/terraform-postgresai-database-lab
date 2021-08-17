@@ -4,10 +4,10 @@ set -x
 
 sleep 20
 #run certbot and copy files to envoy
-# to avoid restrinctions from letsencrypt like "There were too many requests of a given type ::
+# to avoid restrictions from letsencrypt like "There were too many requests of a given type ::
 # Error creating new order :: too many certificates (5) already issued for this exact set of domains
 # in the last 168 hours: demo-api-engine.aws.postgres.ai: see https://letsencrypt.org/docs/rate-limits/"
-# follwing three lines were commented out and mocked up. In real implementation inline certs have to be
+# following three lines were commented out and mocked up. In real implementation inline certs have to be
 # removed and letsencrypt generated certs should be used
 
 
@@ -100,8 +100,14 @@ for i in $${!disks[@]}; do
 done
 
 # Adjust DLE config
-mkdir ~/.dblab
+mkdir -p ~/.dblab/postgres_conf/
+
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/pg_hba.conf \
+  --output ~/.dblab/postgres_conf/pg_hba.conf
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/postgresql.conf --output ~/.dblab/postgres_conf/postgresql.conf
+cat /tmp/postgresql_clones_custom.conf >> ~/.dblab/postgres_conf/postgresql.conf
+
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
 sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
@@ -117,11 +123,14 @@ sed -ri "s/:13/:${source_postgres_version}/g"  ~/.dblab/server.yml
 case "${source_type}" in 
 
   postgres)
+  # Mount directory to store dump files.
+  extra_mount="--volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump"
+
   sed -ri "s/^(\s*)(host: 34.56.78.90$)/\1host: ${source_postgres_host}/" ~/.dblab/server.yml
   sed -ri "s/^(\s*)(port: 5432$)/\1port: ${source_postgres_port}/" ~/.dblab/server.yml
   sed -ri "s/^(\s*)(            username: postgres$)/\1            username: ${source_postgres_username}/" ~/.dblab/server.yml
   sed -ri "s/^(\s*)(password:.*$)/\1password: ${source_postgres_password}/" ~/.dblab/server.yml
-  #restore pg_dump via pipe -  without saving it on the disk
+  # restore pg_dump via pipe -  without saving it on the disk
   sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" ~/.dblab/server.yml
   sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" ~/.dblab/server.yml
   sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" ~/.dblab/server.yml
@@ -134,10 +143,14 @@ case "${source_type}" in
   s3)
   # Mount S3 bucket if it's defined in Terraform variables
   mkdir -p "${source_pgdump_s3_mount_point}"
-  s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o use_cache=/tmp -o allow_other
+  s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o allow_other
   
+  extra_mount="--volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point}"
+ 
   sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" ~/.dblab/server.yml
   sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" ~/.dblab/server.yml
+  sed -ri '/is always single-threaded./{n;s/.*/        parallelJobs: '${postgres_dump_parallel_jobs}'/}' ~/.dblab/server.yml
+  sed -ri '/jobs to restore faster./{n;s/.*/        parallelJobs: '$(getconf _NPROCESSORS_ONLN)'/}' ~/.dblab/server.yml
   ;;
 
 esac
@@ -148,9 +161,10 @@ sudo docker run \
  --privileged \
  --publish 2345:2345 \
  --volume /var/run/docker.sock:/var/run/docker.sock \
- --volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump \
  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
+ --volume /root/.dblab/postgres_conf:/home/dblab/configs/postgres \
+ $extra_mount \
  --env DOCKER_API_VERSION=1.39 \
  --detach \
  --restart on-failure \
@@ -162,13 +176,15 @@ for i in {1..30000}; do
   sleep 10
 done
 
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/scripts/cli_install.sh | bash
+sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 dblab init \
  --environment-id=tutorial \
  --url=http://localhost:2345 \
  --token=${dle_verification_token} \
  --insecure
 
-#configure and run Joe Bot container
+# Configure and run Joe Bot container.
 cp /home/ubuntu/joe.yml ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/joe.yml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_access_token}/" ~/.dblab/joe.yml
@@ -186,8 +202,8 @@ sudo docker run \
     --detach \
 postgresai/joe:latest
 
-#configure and run DB Migration Checker
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/master/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
+# Configure and run DB Migration Checker.
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${vcs_db_migration_checker_verification_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  url: \"https\\:\\/\\/dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" ~/.dblab/run_ci.yaml
@@ -200,4 +216,4 @@ sudo docker run --name dblab_ci_checker -it --detach \
 --volume /var/run/docker.sock:/var/run/docker.sock \
 --volume /tmp/ci_checker:/tmp/ci_checker \
 --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-postgresai/dblab-ci-checker:2.4.1
+postgresai/dblab-ci-checker:${dle_version_full}
