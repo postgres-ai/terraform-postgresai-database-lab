@@ -156,19 +156,19 @@ case "${source_type}" in
 esac
 
 sudo docker run \
- --name dblab_server \
- --label dblab_control \
- --privileged \
- --publish 2345:2345 \
- --volume /var/run/docker.sock:/var/run/docker.sock \
- --volume /var/lib/dblab:/var/lib/dblab/:rshared \
- --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
- --volume /root/.dblab/postgres_conf:/home/dblab/configs/postgres \
- $extra_mount \
- --env DOCKER_API_VERSION=1.39 \
- --detach \
- --restart on-failure \
- postgresai/dblab-server:${dle_version_full}
+  --name dblab_server \
+  --label dblab_control \
+  --privileged \
+  --publish 2345:2345 \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /var/lib/dblab:/var/lib/dblab/:rshared \
+  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
+  --volume /root/.dblab/postgres_conf:/home/dblab/configs/postgres \
+  $extra_mount \
+  --env DOCKER_API_VERSION=1.39 \
+  --detach \
+  --restart on-failure \
+  registry.gitlab.com/postgres-ai/database-lab/dblab-server:${dle_version_full}
 
 ### Waiting for the Database Lab Engine initialization.
 for i in {1..30000}; do
@@ -195,12 +195,12 @@ sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${platform_joe_signing_sec
 sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/joe.yml
 
 sudo docker run \
-    --name joe_bot \
-    --network=host \
-    --restart=on-failure \
-    --volume ~/.dblab/joe.yml:/home/config/config.yml \
-    --detach \
-postgresai/joe:latest
+  --name joe_bot \
+  --network=host \
+  --restart=on-failure \
+  --volume ~/.dblab/joe.yml:/home/config/config.yml \
+  --detach \
+  postgresai/joe:latest
 
 # Configure and run DB Migration Checker.
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
@@ -211,9 +211,13 @@ sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verifica
 sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_access_token}/" ~/.dblab/run_ci.yaml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${vcs_github_secret_token}/" ~/.dblab/run_ci.yaml
 
-sudo docker run --name dblab_ci_checker -it --detach \
---publish 2500:2500 \
---volume /var/run/docker.sock:/var/run/docker.sock \
---volume /tmp/ci_checker:/tmp/ci_checker \
---volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-postgresai/dblab-ci-checker:${dle_version_full}
+sudo docker run \
+  --name dblab_ci_checker \
+  --label dblab_control \
+  --detach \
+  --restart on-failure \
+  --publish 2500:2500 \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /tmp/ci_checker:/tmp/ci_checker \
+  --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
+  registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:${dle_version_full}
