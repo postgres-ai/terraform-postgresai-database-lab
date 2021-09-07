@@ -3,9 +3,14 @@ variable "aws_ami_name" {
     default = "DBLABserver"
 }
 
-variable "dle_version_full" {
-   description = "3-digit DLE version (2-digit major + minor)"
-   default = "2.4.1"
+variable "dle_version" {
+   description = "Semantic DLE version (3-digits: major, minor, patch)"
+   default = "2.5.0"
+}
+
+variable "joe_version" {
+  description = "Semantic Joe Bot version (3-digits: major, minor, patch)"
+  default = "0.10.0"
 }
 
 variable "aws_deploy_region" {
