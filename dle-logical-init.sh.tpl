@@ -139,7 +139,7 @@ case "${source_type}" in
   # restore pg_dump via pipe -  without saving it on the disk
   sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" $dle_config_path/server.yml
   sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" $dle_config_path/server.yml
-  sed -ri "s/^(\s*)(#   enabled: true.*$)/\1   enabled: true /" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(#   enabled: true.*$)/\1  enabled: true /" $dle_config_path/server.yml
   sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" $dle_config_path/server.yml
   sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" $dle_config_path/server.yml
   sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" $dle_config_path/server.yml
