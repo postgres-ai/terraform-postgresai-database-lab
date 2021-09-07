@@ -100,25 +100,31 @@ for i in $${!disks[@]}; do
 done
 
 # Adjust DLE config
-mkdir -p ~/.dblab/postgres_conf/
+dle_config_path="/home/ubuntu/.dblab/engine/configs"
+dle_meta_path="/home/ubuntu/.dblab/engine/meta"
+postgres_conf_path="/home/ubuntu/.dblab/postgres_conf"
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.logical_generic.yml --output ~/.dblab/server.yml
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/pg_hba.conf \
-  --output ~/.dblab/postgres_conf/pg_hba.conf
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/postgres/postgresql.conf --output ~/.dblab/postgres_conf/postgresql.conf
-cat /tmp/postgresql_clones_custom.conf >> ~/.dblab/postgres_conf/postgresql.conf
+mkdir -p $dle_config_path
+mkdir -p $dle_meta_path
+mkdir -p $postgres_conf_path
 
-sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(forceInit:.*$)/\1forceInit: true/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" ~/.dblab/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.logical_generic.yml --output $dle_config_path/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/pg_hba.conf \
+  --output $postgres_conf_path/pg_hba.conf
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
+cat /tmp/postgresql_clones_custom.conf >> $postgres_conf_path/postgresql.conf
+
+sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(verificationToken:.*$)/\1verificationToken: ${dle_verification_token}/" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(timetable:.*$)/\1timetable: \"${dle_retrieval_refresh_timetable}\"/" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(forceInit:.*$)/\1forceInit: true/" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" $dle_config_path/server.yml
 # Enable Platform
-sed -ri "s/^(\s*)(#platform:$)/\1platform: /" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(#  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\"$)/\1  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\" /" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(#  accessToken: \"platform_access_token\"$)/\1  accessToken: \"${platform_access_token}\"/" ~/.dblab/server.yml
-sed -ri "s/^(\s*)(#  enablePersonalTokens: true$)/\1  enablePersonalTokens: true/" ~/.dblab/server.yml
-sed -ri "s/:13/:${source_postgres_version}/g"  ~/.dblab/server.yml
+sed -ri "s/^(\s*)(#platform:$)/\1platform: /" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(#  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\"$)/\1  url: \"https\\:\\/\\/postgres.ai\\/api\\/general\" /" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(#  accessToken: \"platform_access_token\"$)/\1  accessToken: \"${platform_access_token}\"/" $dle_config_path/server.yml
+sed -ri "s/^(\s*)(#  enablePersonalTokens: true$)/\1  enablePersonalTokens: true/" $dle_config_path/server.yml
+sed -ri "s/:13/:${source_postgres_version}/g"  $dle_config_path/server.yml
 
 case "${source_type}" in 
 
@@ -126,18 +132,18 @@ case "${source_type}" in
   # Mount directory to store dump files.
   extra_mount="--volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump"
 
-  sed -ri "s/^(\s*)(host: 34.56.78.90$)/\1host: ${source_postgres_host}/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(port: 5432$)/\1port: ${source_postgres_port}/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(            username: postgres$)/\1            username: ${source_postgres_username}/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(password:.*$)/\1password: ${source_postgres_password}/" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(host: 34.56.78.90$)/\1host: ${source_postgres_host}/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(port: 5432$)/\1port: ${source_postgres_port}/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(            username: postgres$)/\1            username: ${source_postgres_username}/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(password:.*$)/\1password: ${source_postgres_password}/" $dle_config_path/server.yml
   # restore pg_dump via pipe -  without saving it on the disk
-  sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(          shared_preload_libraries:.*$)/\1          shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" ~/.dblab/server.yml
-  sed -ri "s/^(\s*)(- logicalRestore.*$)/\1#- logicalRestore /" ~/.dblab/server.yml
+  sed -ri "s/^(\s*)(parallelJobs:.*$)/\1parallelJobs: 1/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(# immediateRestore:.*$)/\1immediateRestore: /" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(#   forceInit: false.*$)/\1  forceInit: true /" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(        #   configs:$)/\1          configs: /" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(        #      shared_preload_libraries: .*$)/\1            shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(          shared_preload_libraries:.*$)/\1          shared_preload_libraries: '${postgres_config_shared_preload_libraries}'/" $dle_config_path/server.yml
+  sed -ri "s/^(\s*)(- logicalRestore.*$)/\1#- logicalRestore /" $dle_config_path/server.yml
   ;;
 
   s3)
@@ -146,11 +152,11 @@ case "${source_type}" in
   s3fs ${source_pgdump_s3_bucket} ${source_pgdump_s3_mount_point} -o iam_role -o allow_other
   
   extra_mount="--volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point}"
- 
-  sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" ~/.dblab/server.yml
-  sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" ~/.dblab/server.yml
-  sed -ri '/is always single-threaded./{n;s/.*/        parallelJobs: '${postgres_dump_parallel_jobs}'/}' ~/.dblab/server.yml
-  sed -ri '/jobs to restore faster./{n;s/.*/        parallelJobs: '$(getconf _NPROCESSORS_ONLN)'/}' ~/.dblab/server.yml
+
+  sed -ri "s/^(\s*)(- logicalDump.*$)/\1#- logicalDump /" $dle_config_path/server.yml
+  sed -ri "s|^(\s*)(        dumpLocation:.*$)|\1        dumpLocation: ${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}|" $dle_config_path/server.yml
+  sed -ri '/is always single-threaded./{n;s/.*/        parallelJobs: '${postgres_dump_parallel_jobs}'/}' $dle_config_path/server.yml
+  sed -ri '/jobs to restore faster./{n;s/.*/        parallelJobs: '$(getconf _NPROCESSORS_ONLN)'/}' $dle_config_path/server.yml
   ;;
 
 esac
@@ -162,13 +168,14 @@ sudo docker run \
   --publish 2345:2345 \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume /var/lib/dblab:/var/lib/dblab/:rshared \
-  --volume ~/.dblab/server.yml:/home/dblab/configs/config.yml \
-  --volume /root/.dblab/postgres_conf:/home/dblab/configs/postgres \
+  --volume $dle_config_path:/home/dblab/configs:ro \
+  --volume $dle_meta_path:/home/dblab/meta \
+  --volume $postgres_conf_path:/home/dblab/standard/postgres/control \
   $extra_mount \
   --env DOCKER_API_VERSION=1.39 \
   --detach \
   --restart on-failure \
-  registry.gitlab.com/postgres-ai/database-lab/dblab-server:${dle_version_full}
+registry.gitlab.com/postgres-ai/database-lab/dblab-server:${dle_version}
 
 ### Waiting for the Database Lab Engine initialization.
 for i in {1..30000}; do
@@ -176,7 +183,7 @@ for i in {1..30000}; do
   sleep 10
 done
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/scripts/cli_install.sh | bash
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cli_install.sh | bash
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 dblab init \
  --environment-id=tutorial \
@@ -185,31 +192,44 @@ dblab init \
  --insecure
 
 # Configure and run Joe Bot container.
-cp /home/ubuntu/joe.yml ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_access_token}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(     token:.*$)/\1     token: ${dle_verification_token}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"http\\:\\/\\/localhost\\:2345\"/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${platform_joe_signing_secret}/" ~/.dblab/joe.yml
-sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" ~/.dblab/joe.yml
+joe_config_path="/home/ubuntu/.dblab/joe/configs"
+joe_meta_path="/home/ubuntu/.dblab/joe/meta"
+
+mkdir -p $joe_config_path
+mkdir -p $joe_meta_path
+
+# Copy configuration file from Packer-baked image.
+cp /home/ubuntu/joe.yml $joe_config_path/joe.yml
+
+sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_access_token}/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(     token:.*$)/\1     token: ${dle_verification_token}/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"http\\:\\/\\/localhost\\:2345\"/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${platform_joe_signing_secret}/" $joe_config_path/joe.yml
+sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" $joe_config_path/joe.yml
 
 sudo docker run \
   --name joe_bot \
   --network=host \
   --restart=on-failure \
-  --volume ~/.dblab/joe.yml:/home/config/config.yml \
+  --volume $joe_config_path:/home/configs:ro \
+  --volume $joe_meta_path:/home/meta \
   --detach \
-  postgresai/joe:latest
+  registry.gitlab.com/postgres-ai/joe:${joe_version}
 
 # Configure and run DB Migration Checker.
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version_full}/configs/config.example.run_ci.yaml --output ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${vcs_db_migration_checker_verification_token}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  url: \"https\\:\\/\\/dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verificationToken: ${dle_verification_token}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_access_token}/" ~/.dblab/run_ci.yaml
-sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${vcs_github_secret_token}/" ~/.dblab/run_ci.yaml
+ci_checker_config_path="/home/ubuntu/.dblab/ci_checker/configs"
+mkdir -p $ci_checker_config_path
+
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.ci_checker.yml --output $ci_checker_config_path/ci_checker.yml
+
+sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" $ci_checker_config_path/ci_checker.yml
+sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${vcs_db_migration_checker_verification_token}/" $ci_checker_config_path/ci_checker.yml
+sed -ri "s/^(\s*)(  url: \"https\\:\\/\\/dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" $ci_checker_config_path/ci_checker.yml
+sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verificationToken: ${dle_verification_token}/" $ci_checker_config_path/ci_checker.yml
+sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_access_token}/" $ci_checker_config_path/ci_checker.yml
+sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${vcs_github_secret_token}/" $ci_checker_config_path/ci_checker.yml
 
 sudo docker run \
   --name dblab_ci_checker \
@@ -219,5 +239,5 @@ sudo docker run \
   --publish 2500:2500 \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume /tmp/ci_checker:/tmp/ci_checker \
-  --volume ~/.dblab/run_ci.yaml:/home/dblab/configs/run_ci.yaml \
-  registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:${dle_version_full}
+  --volume $ci_checker_config_path:/home/dblab/configs:ro \
+registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:${dle_version}

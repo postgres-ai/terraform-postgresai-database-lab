@@ -1,4 +1,5 @@
-dle_version_full = "2.4.1"
+dle_version = "2.5.0"
+joe_version = "0.10.0"
 
 aws_ami_name = "DBLABserver*"
 aws_keypair = "YOUR_AWS_KEYPAIR"
