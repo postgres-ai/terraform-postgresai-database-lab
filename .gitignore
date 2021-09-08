@@ -7,4 +7,5 @@ example.com.key
 postgres.example.com.csr
 test.pem
 secret.tfvars
+ubuntu.pem
 
