@@ -27,7 +27,7 @@ resource "aws_iam_role" "db_lab_engine_role" {
           Resource = "arn:aws:s3:::${var.source_pgdump_s3_bucket}"
         },
         {
-          Action   = ["s3:GetObject"]
+          Action   = ["s3:GetObject","s3:GetObjectAcl"]
           Effect   = "Allow"
           Resource = "arn:aws:s3:::${var.source_pgdump_s3_bucket}/*" # Grant read access to entire bucket
         }

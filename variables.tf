@@ -20,7 +20,7 @@ variable "aws_deploy_region" {
 
 variable "aws_ami_owner" {
     description = "Filter for the AMI owner"
-    default = "self"
+    default = "005923036815"
 }
 variable "aws_deploy_ec2_instance_type" {
     description = "Type of EC2 instance"
@@ -49,7 +49,7 @@ variable "aws_deploy_ec2_instance_tag_name" {
 
 variable "aws_deploy_dns_zone_name" {
     description = "The Route53 hosted zone where the DLE will be managed"
-    default = "aws.postgres.ai"
+    default = "dmitrytest.samokhvalov.com"
 }
 
 variable "aws_deploy_dns_api_subdomain" {
