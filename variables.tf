@@ -20,7 +20,7 @@ variable "aws_deploy_region" {
 
 variable "aws_ami_owner" {
     description = "Filter for the AMI owner"
-    default = "005923036815"
+    default = "005923036815" # Postgres.ai account publishes public AMI for DLE 
 }
 variable "aws_deploy_ec2_instance_type" {
     description = "Type of EC2 instance"
