@@ -22,9 +22,15 @@ resource "random_string" "vcs_db_migration_checker_verification_token" {
   special = false
 }
 
-data "template_file" "init" {
-  template = "${file("dle-logical-init.sh.tpl")}"
-  vars = {
+resource "aws_instance" "aws_ec2" {
+  ami               = "${data.aws_ami.ami.id}"
+  availability_zone = "${var.aws_deploy_ebs_availability_zone}"
+  instance_type     = "${var.aws_deploy_ec2_instance_type}"
+  security_groups   = ["${aws_security_group.dle_instance_sg.name}"]
+  key_name          = "${var.aws_keypair}"
+  tags              = "${local.common_tags}"
+  iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
+  user_data         = templatefile("${path.module}/dle-logical-init.sh.tpl",{
     dle_verification_token = "${random_string.dle_verification_token.result}"
     dle_debug_mode = "${var.dle_debug_mode}"
     dle_retrieval_refresh_timetable = "${var.dle_retrieval_refresh_timetable}"
@@ -51,19 +57,7 @@ data "template_file" "init" {
     source_pgdump_s3_bucket = "${var.source_pgdump_s3_bucket}"
     source_pgdump_s3_mount_point = "${var.source_pgdump_s3_mount_point}"
     source_pgdump_path_on_s3_bucket = "${var.source_pgdump_path_on_s3_bucket}"
-  }
-}
-
-resource "aws_instance" "aws_ec2" {
-  ami               = "${data.aws_ami.ami.id}"
-  availability_zone = "${var.aws_deploy_ebs_availability_zone}"
-  instance_type     = "${var.aws_deploy_ec2_instance_type}"
-  security_groups   = ["${aws_security_group.dle_instance_sg.name}"]
-  key_name          = "${var.aws_keypair}"
-  tags              = "${local.common_tags}"
-  iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
-  user_data         = "${data.template_file.init.rendered}"
-
+  })
   provisioner "file" {
     source      = "postgresql_clones_custom.conf"
     destination = "/tmp/postgresql_clones_custom.conf"
