@@ -1,3 +1,14 @@
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "provision_key" {
+  key_name   = "${var.aws_deploy_ec2_instance_tag_name}"
+  public_key = tls_private_key.ssh_key.public_key_openssh
+}
+
+
 resource "random_string" "dle_verification_token" {
   length  = 32
   upper   = true
@@ -27,7 +38,7 @@ resource "aws_instance" "aws_ec2" {
   availability_zone = "${var.aws_deploy_ebs_availability_zone}"
   instance_type     = "${var.aws_deploy_ec2_instance_type}"
   security_groups   = ["${aws_security_group.dle_instance_sg.name}"]
-  key_name          = "${var.aws_keypair}"
+  key_name          = aws_key_pair.provision_key.key_name
   tags              = "${local.common_tags}"
   iam_instance_profile = "${var.source_type == "s3" ? "${aws_iam_instance_profile.instance_profile[0].name}" : null}"
   user_data         = templatefile("${path.module}/dle-logical-init.sh.tpl",{
@@ -58,6 +69,12 @@ resource "aws_instance" "aws_ec2" {
     source_pgdump_s3_mount_point = "${var.source_pgdump_s3_mount_point}"
     source_pgdump_path_on_s3_bucket = "${var.source_pgdump_path_on_s3_bucket}"
   })
+  provisioner "local-exec" { # save private key locally
+    command = "echo '${tls_private_key.ssh_key.private_key_pem}' > ./${var.aws_deploy_ec2_instance_tag_name}.pem"
+  }
+  provisioner "local-exec" {
+    command = "chmod 400 ./'${var.aws_deploy_ec2_instance_tag_name}'.pem"
+  }
   provisioner "file" {
     source      = "postgresql_clones_custom.conf"
     destination = "/tmp/postgresql_clones_custom.conf"
@@ -65,7 +82,7 @@ resource "aws_instance" "aws_ec2" {
     connection {
       type        = "ssh"
       user        = "ubuntu"
-      private_key = "${file("ubuntu.pem")}"
+      private_key = "${tls_private_key.ssh_key.private_key_pem}"
       host        = "${self.public_dns}"
     }
   }
