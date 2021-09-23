@@ -69,12 +69,28 @@ resource "aws_instance" "aws_ec2" {
     source_pgdump_s3_mount_point = "${var.source_pgdump_s3_mount_point}"
     source_pgdump_path_on_s3_bucket = "${var.source_pgdump_path_on_s3_bucket}"
   })
+
   provisioner "local-exec" { # save private key locally
     command = "echo '${tls_private_key.ssh_key.private_key_pem}' > ./${var.aws_deploy_ec2_instance_tag_name}.pem"
   }
   provisioner "local-exec" {
-    command = "chmod 400 ./'${var.aws_deploy_ec2_instance_tag_name}'.pem"
+    command = "chmod 600 ./'${var.aws_deploy_ec2_instance_tag_name}'.pem"
   }
+
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = "${tls_private_key.ssh_key.private_key_pem}"
+      host        = "${self.public_dns}"
+    }
+    inline = ["echo 'ssh is ready!'"]
+  }
+
+  provisioner "local-exec" {
+    command = "cat ~/.ssh/id_rsa.pub | ssh -o StrictHostKeyChecking=no -i ./${var.aws_deploy_ec2_instance_tag_name}.pem ubuntu@${self.public_dns} 'cat >> ~/.ssh/authorized_keys'"
+  }
+
   provisioner "file" {
     source      = "postgresql_clones_custom.conf"
     destination = "/tmp/postgresql_clones_custom.conf"
