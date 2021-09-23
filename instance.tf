@@ -1,3 +1,7 @@
+locals {
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -84,11 +88,10 @@ resource "aws_instance" "aws_ec2" {
       private_key = "${tls_private_key.ssh_key.private_key_pem}"
       host        = "${self.public_dns}"
     }
-    inline = ["echo 'ssh is ready!'"]
-  }
-
-  provisioner "local-exec" {
-    command = "cat ~/.ssh/id_rsa.pub | ssh -o StrictHostKeyChecking=no -i ./${var.aws_deploy_ec2_instance_tag_name}.pem ubuntu@${self.public_dns} 'cat >> ~/.ssh/authorized_keys'"
+    inline = [
+      "echo 'ssh is ready, copy ssh public keys'",
+      "echo '${local.public_key}' >> ~/.ssh/authorized_keys"
+    ]
   }
 
   provisioner "file" {
