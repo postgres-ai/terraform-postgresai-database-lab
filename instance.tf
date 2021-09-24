@@ -89,9 +89,13 @@ resource "aws_instance" "aws_ec2" {
       host        = "${self.public_dns}"
     }
     inline = [
-      "echo 'ssh is ready, copy ssh public keys'",
-      "echo '${local.public_key}' >> ~/.ssh/authorized_keys"
+      "echo 'ssh is ready, will copy ssh public keys'",
+      "echo '${join("\n", var.ssh_public_keys_list)}' >> ~/.ssh/authorized_keys"
     ]
+  }
+
+  provisioner "local-exec" {
+    command = "for ssh_key in ${join(" ", var.ssh_public_keys_files_list)}; do cat $ssh_key | ssh -i ./${var.aws_deploy_ec2_instance_tag_name}.pem ubuntu@${self.public_dns} -o StrictHostKeyChecking=no 'cat >> ~/.ssh/authorized_keys'; done"
   }
 
   provisioner "file" {

@@ -49,7 +49,7 @@ variable "aws_deploy_ec2_instance_tag_name" {
 
 variable "aws_deploy_dns_zone_name" {
     description = "The Route53 hosted zone where the DLE will be managed"
-    default = "aws.postgres.ai"
+    default = "dmitrytest.samokhvalov.com"
 }
 
 variable "aws_deploy_dns_api_subdomain" {
@@ -176,4 +176,14 @@ variable "source_pgdump_s3_mount_point"{
 variable "postgres_dump_parallel_jobs"{
   description = "DLE config parallelJobs parameter value"
   default = "2"
+}
+
+variable "ssh_public_keys_files_list"{
+ description = "List of files with ssh public key to copy to provisioned instance with DLE"
+ default = []
+}
+
+variable "ssh_public_keys_list"{
+ description = "List of ssh public key to copy to provisioned instance with DLE"
+ default = []
 }
