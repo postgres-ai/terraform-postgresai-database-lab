@@ -184,6 +184,6 @@ variable "ssh_public_keys_files_list"{
 }
 
 variable "ssh_public_keys_list"{
- description = "List of ssh public key to copy to provisioned instance with DLE"
+ description = "List of ssh public keys to copy to the provisioned instance with DLE"
  default = []
 }
