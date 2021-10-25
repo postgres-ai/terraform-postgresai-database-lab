@@ -179,7 +179,7 @@ variable "postgres_dump_parallel_jobs"{
 }
 
 variable "ssh_public_keys_files_list"{
- description = "List of files with ssh public key to copy to provisioned instance with DLE"
+ description = "List of files with ssh public key to copy to the provisioned instance with DLE"
  default = []
 }
 
