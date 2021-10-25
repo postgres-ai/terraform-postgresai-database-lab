@@ -49,7 +49,7 @@ variable "aws_deploy_ec2_instance_tag_name" {
 
 variable "aws_deploy_dns_zone_name" {
     description = "The Route53 hosted zone where the DLE will be managed"
-    default = "dmitrytest.samokhvalov.com"
+    default = "aws.postgres.ai"
 }
 
 variable "aws_deploy_dns_api_subdomain" {
