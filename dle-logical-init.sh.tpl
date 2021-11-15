@@ -254,6 +254,15 @@ sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verifica
 sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_access_token}/" $ci_checker_config_path/ci_checker.yml
 sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${vcs_github_secret_token}/" $ci_checker_config_path/ci_checker.yml
 
+yq e -i '
+  .app.debug = ${dle_debug_mode} |
+  .app.verificationToken = ${vcs_db_migration_checker_verification_token} |
+  .dle.url = "http://dblab_server:2345" |
+  .dle.verificationToken = ${dle_verification_token} |
+  .platform.accessToken = ${platform_access_token} |
+  .source.token = ${vcs_github_secret_token}
+' $ci_checker_config_path/ci_checker.yml
+
 sudo docker run \
   --name dblab_ci_checker \
   --label dblab_control \
