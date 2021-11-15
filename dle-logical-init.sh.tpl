@@ -114,10 +114,6 @@ curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/st
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
 cat /tmp/postgresql_clones_custom.conf >> $postgres_conf_path/postgresql.conf
 
-# TODO: move to Packer instructions.
-wget https://github.com/mikefarah/yq/releases/download/v4.14.1/yq_linux_amd64 -O /usr/bin/yq &&\
-    chmod +x /usr/bin/yq
-
 yq e -i '
   .global.debug=${dle_debug_mode} |
   .server.verificationToken="${dle_verification_token}" |
@@ -140,23 +136,23 @@ case "${source_type}" in
   # Mount directory to store dump files.
   extra_mount="--volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump"
 
-yq e -i '
-  .retrieval.spec.logicalDump.options.source.connection.host = ${source_postgres_host}" |
-  .retrieval.spec.logicalDump.options.source.connection.port = ${source_postgres_port}" |
-  .retrieval.spec.logicalDump.options.source.connection.username = ${source_postgres_username}" |
-  .retrieval.spec.logicalDump.options.source.connection.password = ${source_postgres_password}" |
-  .retrieval.spec.logicalDump.options.parallelJobs = 1"
-' $dle_config_path/server.yml
+  yq e -i '
+    .retrieval.spec.logicalDump.options.source.connection.host = ${source_postgres_host}" |
+    .retrieval.spec.logicalDump.options.source.connection.port = ${source_postgres_port}" |
+    .retrieval.spec.logicalDump.options.source.connection.username = ${source_postgres_username}" |
+    .retrieval.spec.logicalDump.options.source.connection.password = ${source_postgres_password}" |
+    .retrieval.spec.logicalDump.options.parallelJobs = 1"
+  ' $dle_config_path/server.yml
 
   # restore pg_dump via pipe -  without saving it on the disk
   yq e -i '
-  .databaseContainer.dockerImage="postgresai/extended-postgres:${source_postgres_version}" |
-  .retrieval.spec.logicalDump.options.immediateRestore.enabled=true |
-  .retrieval.spec.logicalDump.options.immediateRestore.forceInit=true |
-  .retrieval.spec.logicalDump.options.immediateRestore.configs alias = .databaseConfig |
-  del(.retrieval.jobs[] | select(. == "logicalRestore")) |
-  .databaseConfig.configs.shared_preload_libraries = ${postgres_config_shared_preload_libraries}
-' $dle_config_path/server.yml
+    .databaseContainer.dockerImage="postgresai/extended-postgres:${source_postgres_version}" |
+    .retrieval.spec.logicalDump.options.immediateRestore.enabled=true |
+    .retrieval.spec.logicalDump.options.immediateRestore.forceInit=true |
+    .retrieval.spec.logicalDump.options.immediateRestore.configs alias = .databaseConfig |
+    del(.retrieval.jobs[] | select(. == "logicalRestore")) |
+    .databaseConfig.configs.shared_preload_libraries = ${postgres_config_shared_preload_libraries}
+  ' $dle_config_path/server.yml
   ;;
 
   s3)
@@ -167,15 +163,15 @@ yq e -i '
   extra_mount="--volume ${source_pgdump_s3_mount_point}:${source_pgdump_s3_mount_point}"
 
   yq e -i '
-  del(.retrieval.jobs[] | select(. == "logicalDump")) |
-  .retrieval.spec.logicalRestore.options.dumpLocation="${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}"
-' $dle_config_path/server.yml
+    del(.retrieval.jobs[] | select(. == "logicalDump")) |
+    .retrieval.spec.logicalRestore.options.dumpLocation="${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}"
+  ' $dle_config_path/server.yml
 
   nProcessors = $(getconf _NPROCESSORS_ONLN)
   yq e -i '
-  .retrieval.spec.logicalDump.options.parallelJobs=${postgres_dump_parallel_jobs} |
-  .retrieval.spec.logicalRestore.options.parallelJobs=$nProcessors
-' $dle_config_path/server.yml
+    .retrieval.spec.logicalDump.options.parallelJobs=${postgres_dump_parallel_jobs} |
+    .retrieval.spec.logicalRestore.options.parallelJobs=$nProcessors
+  ' $dle_config_path/server.yml
   ;;
 
 esac
@@ -221,12 +217,12 @@ curl https://gitlab.com/postgres-ai/joe/-/raw/${joe_version}/configs/config.exam
 
 yq e -i '
   .app.debug = ${dle_debug_mode} |
-  .platform.token = ${platform_access_token} |
-  .channelMapping.dblabServers.prod1.token = ${dle_verification_token} |
+  .platform.token = "${platform_access_token}" |
+  .channelMapping.dblabServers.prod1.token = "${dle_verification_token}" |
   .channelMapping.dblabServers.url.token = "http://localhost:2345" |
-  .channelMapping.communicationTypes.webui[0].credentials.signingSecret = ${platform_joe_signing_secret} |
-  .channelMapping.communicationTypes.webui[0].channels[0].project = ${platform_project_name} |
-  .channelMapping.communicationTypes.webui[0].channels[0].dblabParams.dbname = ${source_postgres_dbname} |
+  .channelMapping.communicationTypes.webui[0].credentials.signingSecret = "${platform_joe_signing_secret}" |
+  .channelMapping.communicationTypes.webui[0].channels[0].project = "${platform_project_name}" |
+  .channelMapping.communicationTypes.webui[0].channels[0].dblabParams.dbname = "${source_postgres_dbname}" |
   del(.channelMapping.communicationTypes.slack) |
   del(.channelMapping.communicationTypes.slackrtm) |
   del(.channelMapping.communicationTypes.slacksm)
@@ -247,20 +243,13 @@ mkdir -p $ci_checker_config_path
 
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.ci_checker.yml --output $ci_checker_config_path/ci_checker.yml
 
-sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" $ci_checker_config_path/ci_checker.yml
-sed -ri "s/^(\s*)(  verificationToken: \"secret_token\".*$)/\1  verificationToken: ${vcs_db_migration_checker_verification_token}/" $ci_checker_config_path/ci_checker.yml
-sed -ri "s/^(\s*)(  url: \"https\\:\\/\\/dblab.domain.com\"$)/\1  url: \"http\\:\\/\\/dblab_server\\:2345\"/" $ci_checker_config_path/ci_checker.yml
-sed -ri "s/^(\s*)(  verificationToken: \"checker_secret_token\".*$)/\1  verificationToken: ${dle_verification_token}/" $ci_checker_config_path/ci_checker.yml
-sed -ri "s/^(\s*)(  accessToken:.*$)/\1  accessToken: ${platform_access_token}/" $ci_checker_config_path/ci_checker.yml
-sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${vcs_github_secret_token}/" $ci_checker_config_path/ci_checker.yml
-
 yq e -i '
   .app.debug = ${dle_debug_mode} |
-  .app.verificationToken = ${vcs_db_migration_checker_verification_token} |
+  .app.verificationToken = "${vcs_db_migration_checker_verification_token}" |
   .dle.url = "http://dblab_server:2345" |
-  .dle.verificationToken = ${dle_verification_token} |
-  .platform.accessToken = ${platform_access_token} |
-  .source.token = ${vcs_github_secret_token}
+  .dle.verificationToken = "${dle_verification_token}" |
+  .platform.accessToken = "${platform_access_token}" |
+  .source.token = "${vcs_github_secret_token}"
 ' $ci_checker_config_path/ci_checker.yml
 
 sudo docker run \
