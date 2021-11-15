@@ -217,16 +217,20 @@ joe_meta_path="/home/ubuntu/.dblab/joe/meta"
 mkdir -p $joe_config_path
 mkdir -p $joe_meta_path
 
-# Copy configuration file from Packer-baked image.
-cp /home/ubuntu/joe.yml $joe_config_path/joe.yml
+curl https://gitlab.com/postgres-ai/joe/-/raw/${joe_version}/configs/config.example.yml --output $joe_config_path/joe.yml
 
-sed -ri "s/^(\s*)(debug:.*$)/\1debug: ${dle_debug_mode}/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(  token:.*$)/\1  token: ${platform_access_token}/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(     token:.*$)/\1     token: ${dle_verification_token}/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(    url:.*$)/\1    url: \"http\\:\\/\\/localhost\\:2345\"/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(dbname:.*$)/\1dbname: ${source_postgres_dbname}/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(signingSecret:.*$)/\1signingSecret: ${platform_joe_signing_secret}/" $joe_config_path/joe.yml
-sed -ri "s/^(\s*)(project:.*$)/\1project: ${platform_project_name}/" $joe_config_path/joe.yml
+yq e -i '
+  .app.debug = ${dle_debug_mode} |
+  .platform.token = ${platform_access_token} |
+  .channelMapping.dblabServers.prod1.token = ${dle_verification_token} |
+  .channelMapping.dblabServers.url.token = "http://localhost:2345" |
+  .channelMapping.communicationTypes.webui[0].credentials.signingSecret = ${platform_joe_signing_secret} |
+  .channelMapping.communicationTypes.webui[0].channels[0].project = ${platform_project_name} |
+  .channelMapping.communicationTypes.webui[0].channels[0].dblabParams.dbname = ${source_postgres_dbname} |
+  del(.channelMapping.communicationTypes.slack) |
+  del(.channelMapping.communicationTypes.slackrtm) |
+  del(.channelMapping.communicationTypes.slacksm)
+' $joe_config_path/joe.yml
 
 sudo docker run \
   --name joe_bot \
