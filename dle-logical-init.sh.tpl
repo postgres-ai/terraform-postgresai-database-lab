@@ -219,7 +219,7 @@ yq e -i '
   .app.debug = ${dle_debug_mode} |
   .platform.token = "${platform_access_token}" |
   .channelMapping.dblabServers.prod1.token = "${dle_verification_token}" |
-  .channelMapping.dblabServers.url.token = "http://localhost:2345" |
+  .channelMapping.dblabServers.prod1.url = "http://localhost:2345" |
   .channelMapping.communicationTypes.webui[0].credentials.signingSecret = "${platform_joe_signing_secret}" |
   .channelMapping.communicationTypes.webui[0].channels[0].project = "${platform_project_name}" |
   .channelMapping.communicationTypes.webui[0].channels[0].dblabParams.dbname = "${source_postgres_dbname}" |
