@@ -138,7 +138,7 @@ case "${source_type}" in
 
   yq e -i '
     .retrieval.spec.logicalDump.options.source.connection.host = "${source_postgres_host}" |
-    .retrieval.spec.logicalDump.options.source.connection.port = "${source_postgres_port}" |
+    .retrieval.spec.logicalDump.options.source.connection.port = ${source_postgres_port} |
     .retrieval.spec.logicalDump.options.source.connection.username = "${source_postgres_username}" |
     .retrieval.spec.logicalDump.options.source.connection.password = "${source_postgres_password}" |
     .retrieval.spec.logicalDump.options.parallelJobs = 1
