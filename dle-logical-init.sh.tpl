@@ -151,7 +151,7 @@ case "${source_type}" in
     .retrieval.spec.logicalDump.options.immediateRestore.forceInit=true |
     .retrieval.spec.logicalDump.options.immediateRestore.configs alias = .databaseConfig |
     del(.retrieval.jobs[] | select(. == "logicalRestore")) |
-    .databaseConfig.configs.shared_preload_libraries = ${postgres_config_shared_preload_libraries}
+    .databaseConfigs.configs.shared_preload_libraries = ${postgres_config_shared_preload_libraries}
   ' $dle_config_path/server.yml
   ;;
 
