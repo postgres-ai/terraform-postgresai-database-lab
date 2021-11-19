@@ -25,3 +25,6 @@ output "vcs_db_migration_checker_verification_token" {
 output "vcs_db_migration_checker_registration_url" {
   value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"445")}"
 }
+output "local_ui_url" {
+  value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}"
+}

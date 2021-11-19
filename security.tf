@@ -12,20 +12,16 @@ resource "aws_security_group_rule" "dle_instance_ssh" {
   cidr_blocks       = "${var.aws_deploy_allow_ssh_from_cidrs}"
 }
 
-resource "aws_security_group_rule" "dle_instance_api" {
+resource "aws_security_group_rule" "dle_products" {
+  # Ports:
+  # 443 - dle_instance_api
+  # 444 - joe_bot_api
+  # 445 - ci_observer_api
+  # 446 - dle_local_ui
   security_group_id         = aws_security_group.dle_instance_sg.id
   type                      = "ingress"
   from_port                 = 443
-  to_port                   = 443
-  protocol                  = "tcp"
-  cidr_blocks               = "${var.aws_deploy_allow_api_from_cidrs}"
-}
-
-resource "aws_security_group_rule" "joe_bot_api" {
-  security_group_id         = aws_security_group.dle_instance_sg.id
-  type                      = "ingress"
-  from_port                 = 444
-  to_port                   = 444
+  to_port                   = 446
   protocol                  = "tcp"
   cidr_blocks               = "${var.aws_deploy_allow_api_from_cidrs}"
 }
@@ -37,15 +33,6 @@ resource "aws_security_group_rule" "dle_instance_http_cert_auth" {
   to_port                   = 80
   protocol                  = "tcp"
   cidr_blocks               = ["0.0.0.0/0"]
-}
-
-resource "aws_security_group_rule" "ci_observer_api" {
-  security_group_id         = aws_security_group.dle_instance_sg.id
-  type                      = "ingress"
-  from_port                 = 445
-  to_port                   = 445
-  protocol                  = "tcp"
-  cidr_blocks               = "${var.aws_deploy_allow_api_from_cidrs}"
 }
 
 resource "aws_security_group_rule" "dle_instance_clones" {
