@@ -137,11 +137,11 @@ case "${source_type}" in
   extra_mount="--volume /var/lib/dblab/dblab_pool_00/dump:/var/lib/dblab/dblab_pool/dump"
 
   yq e -i '
-    .retrieval.spec.logicalDump.options.source.connection.host = ${source_postgres_host}" |
-    .retrieval.spec.logicalDump.options.source.connection.port = ${source_postgres_port}" |
-    .retrieval.spec.logicalDump.options.source.connection.username = ${source_postgres_username}" |
-    .retrieval.spec.logicalDump.options.source.connection.password = ${source_postgres_password}" |
-    .retrieval.spec.logicalDump.options.parallelJobs = 1"
+    .retrieval.spec.logicalDump.options.source.connection.host = "${source_postgres_host}" |
+    .retrieval.spec.logicalDump.options.source.connection.port = ${source_postgres_port} |
+    .retrieval.spec.logicalDump.options.source.connection.username = "${source_postgres_username}" |
+    .retrieval.spec.logicalDump.options.source.connection.password = "${source_postgres_password}" |
+    .retrieval.spec.logicalDump.options.parallelJobs = 1
   ' $dle_config_path/server.yml
 
   # restore pg_dump via pipe -  without saving it on the disk
@@ -151,7 +151,7 @@ case "${source_type}" in
     .retrieval.spec.logicalDump.options.immediateRestore.forceInit=true |
     .retrieval.spec.logicalDump.options.immediateRestore.configs alias = .databaseConfig |
     del(.retrieval.jobs[] | select(. == "logicalRestore")) |
-    .databaseConfig.configs.shared_preload_libraries = ${postgres_config_shared_preload_libraries}
+    .databaseConfigs.configs.shared_preload_libraries = "${postgres_config_shared_preload_libraries}"
   ' $dle_config_path/server.yml
   ;;
 
