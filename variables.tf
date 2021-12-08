@@ -177,3 +177,13 @@ variable "postgres_dump_parallel_jobs"{
   description = "DLE config parallelJobs parameter value"
   default = "2"
 }
+
+variable "ssh_public_keys_files_list"{
+ description = "List of files with ssh public key to copy to the provisioned instance with DLE"
+ default = []
+}
+
+variable "ssh_public_keys_list"{
+ description = "List of ssh public keys to copy to the provisioned instance with DLE"
+ default = []
+}
