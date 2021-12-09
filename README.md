@@ -1,6 +1,6 @@
 # Database Lab Terraform Module
 
-This [Terraform Module](https://www.terraform.io/docs/language/modules/index.html) is responsible for deploying the [Database Lab Engine](https://gitlab.com/postgres-ai/database-lab) to cloud hosting providers.
+This [Terraform Module](https://www.terraform.io/docs/language/modules/index.html) can be used as a template for deploying the [Database Lab Engine](https://gitlab.com/postgres-ai/database-lab) to cloud hosting providers. Please feel free to tailor it to meet your requirements. 
 
 Your source PostgreSQL database can be located anywhere, but DLE with other components will be created on an EC2 instance under your AWS account. Currently, only "logical" mode of data retrieval (dump/restore) is supported – the only available method for managed PostgreSQL cloud services such as RDS Postgres, RDS Aurora Postgres, Azure Postgres, or Heroku. "Physical" mode is not yet supported, but it will be in the future. More about various data retrieval options for DLE: https://postgres.ai/docs/how-to-guides/administration/data.
 
@@ -49,14 +49,13 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Edit `terraform.tfvars` file. In our example, we will use Heroku demo database as a source:
     ```config
-    dle_version_full = "2.4.1"
+    dle_version_full = "2.5.0"
 
     aws_ami_name = "DBLABserver*"
-    aws_keypair = "YOUR_AWS_KEYPAIR"
 
     aws_deploy_region = "us-east-1"
     aws_deploy_ebs_availability_zone = "us-east-1a"
-    aws_deploy_ec2_instance_type = "t2.large"
+    aws_deploy_ec2_instance_type = "c5.large"
     aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
     aws_deploy_ebs_size = "40"
     aws_deploy_ebs_type = "gp2"
@@ -67,13 +66,14 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     source_postgres_host = "ec2-3-215-57-87.compute-1.amazonaws.com"
     source_postgres_port = "5432"
     source_postgres_dbname = "d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
-    source_postgres_username = "postgres"
-
+    source_postgres_username = "bfxuriuhcfpftt" # in secret.tfvars, use:   source_postgres_password = "dfe01cbd809a71efbaecafec5311a36b439460ace161627e5973e278dfe960b7"
     dle_debug_mode = "true"
     dle_retrieval_refresh_timetable = "0 0 * * 0"
     postgres_config_shared_preload_libraries = "pg_stat_statements,logerrors" # DB Migration Checker requires logerrors extension
 
     platform_project_name = "aws_test_tf"
+
+    ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
     ```
 1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
     ```config
@@ -106,7 +106,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
     ```
 
-1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
+1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output and ssh key from ssh_public_keys_files_list variable. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
     ```shell
     echo "sudo docker logs dblab_server -f" | ssh ubuntu@18.118.126.25 -i postgres_ext_test.pem
     ```
