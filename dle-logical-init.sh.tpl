@@ -87,16 +87,17 @@ sudo systemctl enable envoy
 sudo systemctl start envoy
 
 #create zfs pools
-disks=(${dle_disks})
-for i in $${!disks[@]}; do
-  sudo zpool create -f \
+disks=$(lsblk -ndp -e7 --output NAME)
+i=1
+for disk in $(lsblk -ndp -e7 --output NAME); do
+sudo zpool create -f \
   -O compression=on \
   -O atime=off \
   -O recordsize=128k \
   -O logbias=throughput \
   -m /var/lib/dblab/dblab_pool_0$i\
   dblab_pool_0$i \
-  $${disks[$i]}
+  $disk && ((i=i+1))
 done
 
 # Adjust DLE config

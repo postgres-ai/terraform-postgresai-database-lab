@@ -27,11 +27,6 @@ variable "aws_deploy_ec2_instance_type" {
     default = "t2.micro"
 }
 
-variable "aws_keypair" {
-    description = "Key pair to access the EC2 instance"
-    default = "default"
-}
-
 variable "aws_deploy_allow_ssh_from_cidrs" {
     description = "List of CIDRs allowed to connect to SSH"
     default = ["0.0.0.0/0"]
