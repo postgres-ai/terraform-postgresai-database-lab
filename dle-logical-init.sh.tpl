@@ -101,7 +101,7 @@ i=1
 sleep 10 # Not elegant at all, we need a better way to wait till the moment when all disks are available
 
 # Show all disks in alphabetic order; "-e7" to exclude loop devices
-for disk in $(lsblk -ndp -e7 --output NAME); do
+for disk in $disks; do
   sudo zpool create -f \
     -O compression=on \
     -O atime=off \
