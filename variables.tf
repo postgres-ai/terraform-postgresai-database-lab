@@ -77,6 +77,8 @@ variable "aws_deploy_ebs_type" {
    default = "gp2"
 }
 
+# If we need to have more data disks, this array has to be extended.
+# TODO: change logic – user sets the number of disks only, not thinking about names
 variable "aws_deploy_ec2_volumes_names" {
   description = "List of paths for EBS volumes mounts"
   # This list is of "non-nitro" instances. For "nitro" ones,
