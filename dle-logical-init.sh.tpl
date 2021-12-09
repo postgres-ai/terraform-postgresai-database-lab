@@ -90,14 +90,15 @@ sudo systemctl start envoy
 disks=$(lsblk -ndp -e7 --output NAME)
 i=1
 for disk in $(lsblk -ndp -e7 --output NAME); do
-sudo zpool create -f \
-  -O compression=on \
-  -O atime=off \
-  -O recordsize=128k \
-  -O logbias=throughput \
-  -m /var/lib/dblab/dblab_pool_0$i\
-  dblab_pool_0$i \
-  $disk && ((i=i+1))
+  sudo zpool create -f \
+    -O compression=on \
+    -O atime=off \
+    -O recordsize=128k \
+    -O logbias=throughput \
+    -m /var/lib/dblab/dblab_pool_$(printf "%02d" $i)\
+    dblab_pool_$(printf "%02d" $i) \
+    $disk \
+    && ((i=i+1)) # increment if succeeded
 done
 
 # Adjust DLE config
