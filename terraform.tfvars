@@ -1,4 +1,4 @@
-dle_version = "master"
+dle_version = "2.5.0"  # it is also possible to use branch name here (e.g., "master")
 joe_version = "0.10.0"
 
 aws_ami_name = "DBLABserver*"
