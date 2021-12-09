@@ -57,7 +57,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     aws_deploy_ebs_availability_zone = "us-east-1a"
     aws_deploy_ec2_instance_type = "c5.large"
     aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
-    aws_deploy_ebs_size = "40"
+    aws_deploy_ebs_size = "10"
     aws_deploy_ebs_type = "gp2"
     aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
     aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
