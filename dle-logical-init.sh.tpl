@@ -89,6 +89,7 @@ sudo systemctl start envoy
 #create zfs pools
 disks=$(lsblk -ndp -e7 --output NAME)
 i=1
+# Show all disks in alphabetic order; "-e7" to exclude loop devices
 for disk in $(lsblk -ndp -e7 --output NAME); do
   sudo zpool create -f \
     -O compression=on \
