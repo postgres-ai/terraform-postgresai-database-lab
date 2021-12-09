@@ -25,4 +25,7 @@ postgres_config_shared_preload_libraries = "pg_stat_statements,logerrors" # DB M
 
 platform_project_name = "aws_test_tf"
 
+# Edit this list to have all public keys that will be placed to 
+# have them placed to authorized_keys. Instead of ssh_public_keys_files_list,
+# it is possible to use ssh_public_keys_list containing public keys as text values.
 ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
