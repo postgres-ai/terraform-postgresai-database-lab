@@ -7,8 +7,9 @@ aws_deploy_region = "us-east-1"
 aws_deploy_ebs_availability_zone = "us-east-1a"
 aws_deploy_ec2_instance_type = "c5.large"
 aws_deploy_ec2_instance_tag_name = "dmitry-DBLABserver-ec2instance"
-aws_deploy_ebs_size = "40"
+aws_deploy_ebs_size = "10"
 aws_deploy_ebs_type = "gp2"
+aws_deploy_ec2_volumes_names = ["/dev/xvdf", "/dev/xvdg",]
 aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
 aws_deploy_dns_api_subdomain = "dmitry-tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}.aws.postgres.ai
 

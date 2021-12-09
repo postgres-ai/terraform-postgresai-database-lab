@@ -82,7 +82,6 @@ variable "aws_deploy_ec2_volumes_names" {
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
-    "/dev/xvdh",
   ]
 }
 
