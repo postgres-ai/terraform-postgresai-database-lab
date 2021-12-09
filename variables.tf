@@ -79,6 +79,10 @@ variable "aws_deploy_ebs_type" {
 
 variable "aws_deploy_ec2_volumes_names" {
   description = "List of paths for EBS volumes mounts"
+  # This list is of "non-nitro" instances. For "nitro" ones,
+  # the real disk names will be different and in fact these names 
+  # will be ignored. However, we still need to pass something here
+  # to proceed with the disk attachment.
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
