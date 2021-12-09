@@ -9,6 +9,7 @@ resource "aws_volume_attachment" "ebs_att" {
 resource "aws_ebs_volume" "DLEVolume" {
   count = "${length(tolist(var.aws_deploy_ec2_volumes_names))}"
   availability_zone = "${var.aws_deploy_ebs_availability_zone}"
+  encrypted = "${var.aws_deploy_ebs_encrypted}"
   size  = "${var.aws_deploy_ebs_size}"
   type = "${var.aws_deploy_ebs_type}"
   tags = {

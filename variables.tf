@@ -62,6 +62,11 @@ variable "aws_deploy_ebs_availability_zone" {
    default = "us-east-1a"
 }
 
+variable "aws_deploy_ebs_encrypted" {
+   description = "If EBS volumes used by DLE are encrypted"
+   default = "true"
+}
+
 variable "aws_deploy_ebs_size" {
    description = "The size (GiB) for data volumes used by DLE"
    default = "1"

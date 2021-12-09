@@ -24,4 +24,4 @@ postgres_config_shared_preload_libraries = "pg_stat_statements,logerrors" # DB M
 
 platform_project_name = "aws_test_tf"
 
-ssh_public_keys_files_list = ["/home/ubuntu/.ssh/id_rsa.pub"]
+ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
