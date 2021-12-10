@@ -10,7 +10,6 @@ aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
 aws_deploy_ebs_size = "10"
 aws_deploy_ebs_type = "gp2"
 aws_deploy_ec2_volumes_count = "2"
-#aws_deploy_ec2_volumes_names = ["/dev/xvdf", "/dev/xvdg",]
 aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
 aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}.aws.postgres.ai
 
@@ -30,3 +29,6 @@ platform_project_name = "aws_test_tf"
 # have them placed to authorized_keys. Instead of ssh_public_keys_files_list,
 # it is possible to use ssh_public_keys_list containing public keys as text values.
 ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
+ssh_public_keys_list = [
+"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhbblazDXCFEc21DtFzprWC8DiqidnVRROzp6J6BeJR9+XydPUtl0Rt2mcNvxL5ro5bI9u5JRW8aDd6s+Orpr66hEDdwQTbT1wp5nyduFQcT3rR+aeDSilQvAHjr4/z/GZ6IgZ5MICSIh5hJJagHoxAVqeS9dCA27tv/n2T2XrxIUeBhywH1EmfwrnEw97tHM8F+yegayFDI1nVOUWUIxFMaygMygix8uKbQ2fl4rkkxG2oEx7uyAFMXHt4bewNbZuAp8b/b5ODL6tGHuHhcwfbWGriCO+l7UOf1K9maTx00o4wkzAPyd+qs70y/1iMX2YOOLYaYYdptEnFal2DVoD example@example.com"
+]
