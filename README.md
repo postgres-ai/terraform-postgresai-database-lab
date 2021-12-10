@@ -74,7 +74,12 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 
     platform_project_name = "aws_test_tf"
 
+    # list of ssh public keys stored in files
     ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
+    # or provided inline
+    ssh_public_keys_list = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhbblazDXCFEc21DtFzprWC8DiqidnVRROzp6J6BeJR9+XydPUtl0Rt2mcNvxL5ro5bI9u5JRW8aDd6s+Orpr66hEDdwQTbT1wp5nyduFQcT3rR   +aeDSilQvAHjr4/z/GZ6IgZ5MICSIh5hJJagHoxAVqeS9dCA27tv/n2T2XrxIUeBhywH1EmfwrnEw97tHM8F+yegayFDI1nVOUWUIxFMaygMygix8uKbQ2fl4rkkxG2oEx7uyAFMXHt4bewNbZuAp8b/b5ODL6tGHuHhcwfbWGriCO+l7UOf1K9maTx00o4wkzAPyd+qs70y/1iMX2YOOLYaYYdptEnFal2DVoD example@example.com"
+      ]
     ```
 1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
     ```config
