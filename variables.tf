@@ -77,18 +77,9 @@ variable "aws_deploy_ebs_type" {
    default = "gp2"
 }
 
-# If we need to have more data disks, this array has to be extended.
-# TODO: change logic – user sets the number of disks only, not thinking about names
-variable "aws_deploy_ec2_volumes_names" {
-  description = "List of paths for EBS volumes mounts"
-  # This list is of "non-nitro" instances. For "nitro" ones,
-  # the real disk names will be different and in fact these names 
-  # will be ignored. However, we still need to pass something here
-  # to proceed with the disk attachment.
-  default = [
-    "/dev/xvdf",
-    "/dev/xvdg",
-  ]
+variable "aws_deploy_ec2_volumes_count" {
+  description = "Number (from 1 to 22) of EBS volumes attached to EC2 to create ZFS pools"
+  default = "2"
 }
 
 variable "source_postgres_dbname" {
@@ -191,4 +182,36 @@ variable "ssh_public_keys_files_list"{
 variable "ssh_public_keys_list"{
  description = "List of ssh public keys to copy to the provisioned instance with DLE"
  default = []
+}
+
+variable "aws_deploy_ec2_ebs_volumes_names" {
+  description = "List of paths for EBS volumes mounts"
+  # This list is of "non-nitro" instances. For "nitro" ones,
+  # the real disk names will be different and in fact these names
+  # will be ignored. However, we still need to pass something here
+  # to proceed with the disk attachment.
+  default = [
+    "/dev/xvde",
+    "/dev/xvdf",
+    "/dev/xvdg",
+    "/dev/xvdh",
+    "/dev/xvdi",
+    "/dev/xvdj",
+    "/dev/xvdk",
+    "/dev/xvdl",
+    "/dev/xvdm",
+    "/dev/xvdn",
+    "/dev/xvdo",
+    "/dev/xvdp",
+    "/dev/xvdq",
+    "/dev/xvdr",
+    "/dev/xvds",
+    "/dev/xvdt",
+    "/dev/xvdu",
+    "/dev/xvdv",
+    "/dev/xvdw",
+    "/dev/xvdx",
+    "/dev/xvdy",
+    "/dev/xvdz",
+  ]
 }

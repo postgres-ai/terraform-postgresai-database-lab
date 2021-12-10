@@ -19,7 +19,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
     * Read/Write permissions on Cloudwatch
 
 ## How to use
-- :construction: Currently, it is supposed that you run `terraform` commands on a Linux machine. MacOS and Windows support is not yet implemented (but planned).
+- :construction: Currently, it is supposed that you run `terraform` commands on a Linux machine or MacOS. Windows support is not yet implemented (but planned).
 - It is recommended to clone this Git repository and adjust for your needs. Below we provide the detailed step-by-step instructions for quick start (see "Quick start") for a PoC setup
 - To configure parameters used by Terraform (and the Database Lab Engine itself), you will need to modify `terraform.tfvars` and create a file with secrets (`secret.tfvars`)
 - This Terraform module can be run independently or combined with any other standard Terraform module. You can learn more about using Terraform and the Terraform CLI [here](https://www.terraform.io/docs/cli/commands/index.html)
@@ -58,6 +58,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     aws_deploy_ec2_instance_type = "c5.large"
     aws_deploy_ec2_instance_tag_name = "DBLABserver-ec2instance"
     aws_deploy_ebs_size = "10"
+    aws_deploy_ec2_volumes_count = "2"
     aws_deploy_ebs_type = "gp2"
     aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
     aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
@@ -73,7 +74,12 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 
     platform_project_name = "aws_test_tf"
 
+    # list of ssh public keys stored in files
     ssh_public_keys_files_list = ["~/.ssh/id_rsa.pub"]
+    # or provided inline
+    ssh_public_keys_list = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDhbblazDXCFEc21DtFzprWC8DiqidnVRROzp6J6BeJR9+XydPUtl0Rt2mcNvxL5ro5bI9u5JRW8aDd6s+Orpr66hEDdwQTbT1wp5nyduFQcT3rR   +aeDSilQvAHjr4/z/GZ6IgZ5MICSIh5hJJagHoxAVqeS9dCA27tv/n2T2XrxIUeBhywH1EmfwrnEw97tHM8F+yegayFDI1nVOUWUIxFMaygMygix8uKbQ2fl4rkkxG2oEx7uyAFMXHt4bewNbZuAp8b/b5ODL6tGHuHhcwfbWGriCO+l7UOf1K9maTx00o4wkzAPyd+qs70y/1iMX2YOOLYaYYdptEnFal2DVoD example@example.com"
+      ]
     ```
 1. Create `secret.tfvars` containing `source_postgres_password`, `platform_access_token`, and `vcs_github_secret_token`. An example:
     ```config
