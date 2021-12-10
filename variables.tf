@@ -27,11 +27,6 @@ variable "aws_deploy_ec2_instance_type" {
     default = "t2.micro"
 }
 
-variable "aws_keypair" {
-    description = "Key pair to access the EC2 instance"
-    default = "default"
-}
-
 variable "aws_deploy_allow_ssh_from_cidrs" {
     description = "List of CIDRs allowed to connect to SSH"
     default = ["0.0.0.0/0"]
@@ -67,6 +62,11 @@ variable "aws_deploy_ebs_availability_zone" {
    default = "us-east-1a"
 }
 
+variable "aws_deploy_ebs_encrypted" {
+   description = "If EBS volumes used by DLE are encrypted"
+   default = "true"
+}
+
 variable "aws_deploy_ebs_size" {
    description = "The size (GiB) for data volumes used by DLE"
    default = "1"
@@ -77,12 +77,17 @@ variable "aws_deploy_ebs_type" {
    default = "gp2"
 }
 
+# If we need to have more data disks, this array has to be extended.
+# TODO: change logic – user sets the number of disks only, not thinking about names
 variable "aws_deploy_ec2_volumes_names" {
   description = "List of paths for EBS volumes mounts"
+  # This list is of "non-nitro" instances. For "nitro" ones,
+  # the real disk names will be different and in fact these names 
+  # will be ignored. However, we still need to pass something here
+  # to proceed with the disk attachment.
   default = [
     "/dev/xvdf",
     "/dev/xvdg",
-    "/dev/xvdh",
   ]
 }
 

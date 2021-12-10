@@ -86,17 +86,31 @@ EOF
 sudo systemctl enable envoy
 sudo systemctl start envoy
 
-#create zfs pools
-disks=(${dle_disks})
-for i in $${!disks[@]}; do
+# create zfs pools
+# Get the full list of disks available and then make attempts
+# to create zpool on each. Here we assume that the system disk
+# will be skipped because it already has a filesystem.
+# This is a "brute force" approach that we probably want to
+# rework, but for now we leave it as is because it seems that 
+# `/dev/../by-id` doesn't really work for all EC2 types.
+
+disks=$(lsblk -ndp -e7 --output NAME)   # TODO: this is not needed, used now for debug only
+
+i=1
+
+sleep 10 # Not elegant at all, we need a better way to wait till the moment when all disks are available
+
+# Show all disks in alphabetic order; "-e7" to exclude loop devices
+for disk in $disks; do
   sudo zpool create -f \
-  -O compression=on \
-  -O atime=off \
-  -O recordsize=128k \
-  -O logbias=throughput \
-  -m /var/lib/dblab/dblab_pool_0$i\
-  dblab_pool_0$i \
-  $${disks[$i]}
+    -O compression=on \
+    -O atime=off \
+    -O recordsize=128k \
+    -O logbias=throughput \
+    -m /var/lib/dblab/dblab_pool_$(printf "%02d" $i)\
+    dblab_pool_$(printf "%02d" $i) \
+    $disk \
+    && ((i=i+1)) # increment if succeeded
 done
 
 # Adjust DLE config
