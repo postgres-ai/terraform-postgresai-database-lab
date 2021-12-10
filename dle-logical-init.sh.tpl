@@ -181,7 +181,7 @@ case "${source_type}" in
     .retrieval.spec.logicalRestore.options.dumpLocation="${source_pgdump_s3_mount_point}/${source_pgdump_path_on_s3_bucket}"
   ' $dle_config_path/server.yml
 
-  nProcessors = $(getconf _NPROCESSORS_ONLN)
+  nProcessors=$(getconf _NPROCESSORS_ONLN)
   yq e -i '
     .retrieval.spec.logicalDump.options.parallelJobs=${postgres_dump_parallel_jobs} |
     .retrieval.spec.logicalRestore.options.parallelJobs=$nProcessors

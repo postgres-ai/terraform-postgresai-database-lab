@@ -49,7 +49,6 @@ resource "aws_instance" "aws_ec2" {
     dle_verification_token = "${random_string.dle_verification_token.result}"
     dle_debug_mode = "${var.dle_debug_mode}"
     dle_retrieval_refresh_timetable = "${var.dle_retrieval_refresh_timetable}"
-    dle_disks = "${join(" ",var.aws_deploy_ec2_volumes_names)}"
     dle_version = "${var.dle_version}"
     joe_version = "${var.joe_version}"
     aws_deploy_dns_zone_name = "${var.aws_deploy_dns_zone_name}"
