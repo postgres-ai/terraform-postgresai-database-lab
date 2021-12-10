@@ -12,7 +12,7 @@ Your source PostgreSQL database can be located anywhere, but DLE with other comp
 - [Terraform Installed](https://learn.hashicorp.com/tutorials/terraform/install-cli) (minimal version: 1.0.0)
 - AWS [Route 53](https://aws.amazon.com/route53/) Hosted Zone (For setting up TLS) for a domain or sub-domain you control
 - You must have AWS Access Keys and a default region in your Terraform environment (See section on required IAM Permissions)
-- The DLE runs on an EC2 instance which can be accessed using a selected set of SSH keys uploaded to EC2. Use the Terraform parameter `aws_keypair` to specify which EC2 Keypair to use
+- The DLE runs on an EC2 instance which can be accessed using a selected set of SSH keys uploaded to EC2.
 - Required IAM Permissions: to successfully run this Terraform module, the IAM User/Role must have the following permissions:
     * Read/Write permissions on EC2
     * Read/Write permissions on Route53
@@ -106,7 +106,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
     ```
 
-1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output and ssh key from ssh_public_keys_files_list variable. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
+1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output and ssh key from ssh_public_keys_files_list and/or ssh_public_keys_list variales. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
     ```shell
     echo "sudo docker logs dblab_server -f" | ssh ubuntu@18.118.126.25 -i postgres_ext_test.pem
     ```
