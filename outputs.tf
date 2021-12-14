@@ -28,3 +28,20 @@ output "vcs_db_migration_checker_registration_url" {
 output "local_ui_url" {
   value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}"
 }
+
+locals {
+  message = <<EOT
+
+
+Congratulations! 
+You have successfully provisioned cloud infrastructure for DLE. 
+
+To connect to created VM you may ssh ubuntu@${aws_instance.aws_ec2.public_ip} -i ${var.aws_deploy_ec2_instance_tag_name}.pem
+To open local UI ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}
+To open to DLE api ${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))}
+To open CI Checker API ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"445")}
+EOT
+}
+output "next_steps" {
+  value = local.message
+}
