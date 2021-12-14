@@ -190,6 +190,9 @@ case "${source_type}" in
 
 esac
 
+# Fix ownership of the dblab directory
+chown -R ubuntu.ubuntu /home/ubuntu/.dblab/
+
 sudo docker run \
   --name dblab_server \
   --label dblab_control \
@@ -214,9 +217,6 @@ done
 
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cli_install.sh | bash
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
-
-# Fix ownership of the dblab directory
-chown -R ubuntu.ubuntu /home/ubuntu/.dblab/
 
 # Init dblab environment
 dblab init \
