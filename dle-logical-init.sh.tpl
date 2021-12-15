@@ -190,6 +190,9 @@ case "${source_type}" in
 
 esac
 
+# Fix ownership of the dblab directory
+chown -R ubuntu.ubuntu /home/ubuntu/.dblab/
+
 sudo docker run \
   --name dblab_server \
   --label dblab_control \
@@ -214,11 +217,14 @@ done
 
 curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cli_install.sh | bash
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
-dblab init \
- --environment-id=tutorial \
- --url=http://localhost:2345 \
- --token=${dle_verification_token} \
- --insecure
+
+# Init dblab environment
+su - ubuntu -c \
+ 'dblab init \
+  --environment-id=tutorial \
+  --url=http://localhost:2345 \
+  --token=${dle_verification_token} \
+  --insecure'
 
 # Configure and run Joe Bot container.
 joe_config_path="/home/ubuntu/.dblab/joe/configs"
@@ -276,3 +282,4 @@ sudo docker run \
   --volume /tmp/ci_checker:/tmp/ci_checker \
   --volume $ci_checker_config_path:/home/dblab/configs:ro \
 registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:${dle_version}
+

@@ -28,3 +28,30 @@ output "vcs_db_migration_checker_registration_url" {
 output "local_ui_url" {
   value = "${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}"
 }
+
+locals {
+  welcome_message = <<EOT
+
+
+    #####################################################################
+
+    Congratulations! Database Lab Engine installed.
+    Data initialization may take time, depending on the database size.
+
+    You should be able to work with all DLE interfaces already:
+    - [RECOMMENDED] UI: ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}
+    - CLI: dblab init --url=${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))} --token=${random_string.dle_verification_token.result} --environment="${aws_instance.aws_ec2.id}" --insecure
+    - API: ${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))}
+    - SSH connection for troubleshooting: ssh ubuntu@${aws_instance.aws_ec2.public_ip} -i ${var.aws_deploy_ec2_instance_tag_name}.pem
+
+    (Use verification token: ${random_string.dle_verification_token.result}
+
+    For support, go to https://postgres.ai/contact.
+
+    #####################################################################
+
+EOT
+}
+output "zzz_next_steps" {
+  value = local.welcome_message
+}
