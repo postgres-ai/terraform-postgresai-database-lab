@@ -50,13 +50,6 @@ locals {
 
     #####################################################################
 
-<<<<<<< HEAD
-=======
-To connect to created VM you may ssh ubuntu@${aws_instance.aws_ec2.public_ip} -i ${var.aws_deploy_ec2_instance_tag_name}.pem
-To open embedded Community Edition UI ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}
-To open to DLE API ${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))}
-To open DB Migration Checker API ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"445")}
->>>>>>> d080622f47820bb8f4e66b76ffe1ec0d9f2c91f9
 EOT
 }
 output "zzz_next_steps" {
