@@ -103,14 +103,25 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. If everything goes well, you should get an output like this:
     ```config
-    vcs_db_migration_checker_verification_token = "gsio7KmgaxECfJ80kUx2tUeIf4kEXZex"
-    dle_verification_token = "zXPodd13LyQaKgVXGmSCeB8TUtnGNnIa"
-    ec2_public_dns = "ec2-18-118-126-25.us-east-2.compute.amazonaws.com"
-    ec2instance = "i-0b07738148950af25"
-    ip = "18.118.126.25"
-    platform_joe_signing_secret = "lG23qZbUh2kq0ULIBfW6TRwKzqGZu1aP"
-    public_dns_name = "demo-api-engine.aws.postgres.ai"  # todo: this should be URL, not hostname – further we'll need URL, with protocol – `https://`
-    ```
+
+    #####################################################################
+
+    Congratulations! Database Lab Engine installed.
+    Data initialization may take time, depending on the database size.
+
+    You should be able to work with all DLE interfaces already:
+    - [RECOMMENDED] UI: https://tf-test.aws.postgres.ai:446
+    - CLI: dblab init --url=https://tf-test.aws.postgres.ai --token=sDTPu17pzXhW9DkhcSGpAMj72KgiIJxG --environment="i-0687b060f45314be5" --insecure
+    - API: https://tf-test.aws.postgres.ai
+    - SSH connection for troubleshooting: ssh ubuntu@3.92.133.178 -i dmitry-DBLABserver-ec2instance.pem
+
+    (Use verification token: sDTPu17pzXhW9DkhcSGpAMj72KgiIJxG
+
+    For support, go to https://postgres.ai/contact.
+
+    #####################################################################
+
+   ```
 
 1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output and ssh key from ssh_public_keys_files_list and/or ssh_public_keys_list variables. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
     ```shell
