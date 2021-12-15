@@ -63,7 +63,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     aws_deploy_allow_ssh_from_cidrs = ["0.0.0.0/0"]
     aws_deploy_dns_api_subdomain = "tf-test" # subdomain in aws.postgres.ai, fqdn will be ${dns_api_subdomain}-engine.aws.postgres
 
-    source_postgres_version = "13"
+    source_postgres_version = "4"
     source_postgres_host = "ec2-3-215-57-87.compute-1.amazonaws.com"
     source_postgres_port = "5432"
     source_postgres_dbname = "d3dljqkrnopdvg" # this is an existing DB (Heroku example DB)
