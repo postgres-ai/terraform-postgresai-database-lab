@@ -219,11 +219,12 @@ curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cl
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 
 # Init dblab environment
-dblab init \
- --environment-id=tutorial \
- --url=http://localhost:2345 \
- --token=${dle_verification_token} \
- --insecure
+su - ubuntu -c \
+ 'dblab init \
+  --environment-id=tutorial \
+  --url=http://localhost:2345 \
+  --token=${dle_verification_token} \
+  --insecure'
 
 # Configure and run Joe Bot container.
 joe_config_path="/home/ubuntu/.dblab/joe/configs"

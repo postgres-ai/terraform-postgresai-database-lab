@@ -99,7 +99,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Deploy:
     ```
-    terraform  apply -var-file="secret.tfvars" -auto-approve
+    terraform  apply -var-file="secret.tfvars" -auto-approve && terraform output -raw next_steps
     ```
 1. If everything goes well, you should get an output like this:
     ```config
