@@ -37,7 +37,7 @@ Congratulations!
 You have successfully provisioned cloud infrastructure for DLE. 
 
 To connect to created VM you may ssh ubuntu@${aws_instance.aws_ec2.public_ip} -i ${var.aws_deploy_ec2_instance_tag_name}.pem
-To open local UI ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}
+To open embedded UI ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"446")}
 To open to DLE API ${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))}
 To open DB Migration Checker API ${format("%s://%s:%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn),"445")}
 EOT

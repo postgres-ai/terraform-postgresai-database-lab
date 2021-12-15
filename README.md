@@ -107,7 +107,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     You have successfully provisioned cloud infrastructure for DLE.
 
     To connect to created VM you may ssh -t ubuntu@3.88.237.4 -i dmitry-DBLABserver-ec2instance.pem "sudo su -"
-    To open local UI https://dmitry-tf-test.aws.postgres.ai:446
+    To open embedded UI https://dmitry-tf-test.aws.postgres.ai:446
     To open to DLE api https://dmitry-tf-test.aws.postgres.ai
     To open CI Checker API https://dmitry-tf-test.aws.postgres.ai:445
     ```
