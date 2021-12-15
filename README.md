@@ -104,6 +104,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 1. If everything goes well, you should get an output like this:
     ```config
 
+<<<<<<< HEAD
 
     #####################################################################
 
@@ -124,6 +125,13 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 
     
    ```
+=======
+    To connect to created VM you may ssh -t ubuntu@3.88.237.4 -i dmitry-DBLABserver-ec2instance.pem "sudo su -"
+    To open embedded Community Edition UI https://dmitry-tf-test.aws.postgres.ai:446
+    To open to DLE API https://dmitry-tf-test.aws.postgres.ai
+    To open CI Checker API https://dmitry-tf-test.aws.postgres.ai:445
+    ```
+>>>>>>> d080622f47820bb8f4e66b76ffe1ec0d9f2c91f9
 
 1. To verify result and check the progress, you might want to connect to the just-created EC2 machine using IP address or hostname from the Terraform output and ssh key from ssh_public_keys_files_list and/or ssh_public_keys_list variables. In our example, it can be done using this one-liner (you can find more about DLE logs and configuration on this page: https://postgres.ai/docs/how-to-guides/administration/engine-manage):
     ```shell
