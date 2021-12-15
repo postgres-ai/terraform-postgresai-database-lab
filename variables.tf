@@ -109,7 +109,7 @@ variable "source_postgres_password" {
 
 variable "source_postgres_version" {
   description = "Source PostgreSQL major version (examples: 9.6, 11, 14)"
-  default = "13"
+  default = "14"
 }
 
 variable "dle_verification_token" {
