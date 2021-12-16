@@ -17,7 +17,7 @@ resource "aws_security_group_rule" "dle_products" {
   # 443 - dle_instance_api
   # 444 - joe_bot_api
   # 445 - ci_observer_api
-  # 446 - dle_local_ui
+  # 446 - dle_embedded_ui
   security_group_id         = aws_security_group.dle_instance_sg.id
   type                      = "ingress"
   from_port                 = 443
