@@ -44,7 +44,7 @@ locals {
     - API: ${format("%s://%s", "https",join("", aws_route53_record.dblab_subdomain.*.fqdn))}
     - SSH connection for troubleshooting: ssh ubuntu@${aws_instance.aws_ec2.public_ip} -i ${var.aws_deploy_ec2_instance_tag_name}.pem
 
-    (Use verification token: ${random_string.dle_verification_token.result}
+    (Use verification token: ${random_string.dle_verification_token.result})
 
     For support, go to https://postgres.ai/contact.
 

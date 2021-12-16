@@ -115,7 +115,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     - API: https://tf-test.aws.postgres.ai
     - SSH connection for troubleshooting: ssh ubuntu@3.92.133.178 -i dmitry-DBLABserver-ec2instance.pem
 
-    (Use verification token: sDTPu17pzXhW9DkhcSGpAMj72KgiIJxG
+    (Use verification token: sDTPu17pzXhW9DkhcSGpAMj72KgiIJxG)
 
     For support, go to https://postgres.ai/contact.
 
