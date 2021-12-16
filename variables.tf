@@ -99,7 +99,7 @@ variable "source_postgres_port" {
 
 variable "source_postgres_username" {
   description = "Source database username"
-  sensitive   = true
+  default = "postgres"
 }
 
 variable "source_postgres_password" {
