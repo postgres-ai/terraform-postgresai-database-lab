@@ -52,6 +52,7 @@ locals {
 
 EOT
 }
-output "zzz_next_steps" {
+output "next_steps" {
   value = local.welcome_message
+  sensitive   = true
 }
