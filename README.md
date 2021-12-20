@@ -99,7 +99,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Deploy:
     ```
-    terraform  apply -var-file="secret.tfvars" -auto-approve
+    terraform apply -var-file="secret.tfvars" -auto-approve && terraform output -raw next_steps
     ```
 1. If everything goes well, you should get an output like this:
     ```config
@@ -186,7 +186,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
 
 This is it!
 
-If you need to remove everything created by this Terraform module, you can simply run `terraform destroy`. Do not forget to do it if you're just experimenting. Otherwise, if you leave infrastructure blocks running, they might significantly affect your AWS bill (depending on the EC2 instance family you've chosen, the disk type, and size).
+If you need to remove everything created by this Terraform module, you can run `terraform destroy -var-file="secret.tfvars" -auto-approve`. Do not forget to do it if you're just experimenting. Otherwise, if you leave infrastructure blocks running, they might significantly affect your AWS bill (depending on the EC2 instance family you've chosen, the disk type, and size).
 
 ## Important Note
 When the DLE creates new database clones, it makes them available on incremental ports in the 6000 range (e.g. 6000, 6001, ...). The DLE CLI will also report that the clone is available on a port in the 6000 range.  However, please note that these are the ports when accessing the DLE from `localhost`.  This Terraform module deploys [Envoy](https://www.envoyproxy.io/) to handle SSL termination and port forwarding to connect to DLE generated clones.
