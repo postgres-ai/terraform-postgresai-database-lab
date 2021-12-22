@@ -193,6 +193,8 @@ esac
 # Fix ownership of the dblab directory
 chown -R ubuntu.ubuntu /home/ubuntu/.dblab/
 
+image_version=$(echo ${dle_version} | sed 's/v*//')
+
 sudo docker run \
   --name dblab_server \
   --label dblab_control \
@@ -207,7 +209,7 @@ sudo docker run \
   --env DOCKER_API_VERSION=1.39 \
   --detach \
   --restart on-failure \
-registry.gitlab.com/postgres-ai/database-lab/dblab-server:${dle_version}
+registry.gitlab.com/postgres-ai/database-lab/dblab-server:$image_version
 
 ### Waiting for the Database Lab Engine initialization.
 for i in {1..30000}; do
@@ -281,5 +283,5 @@ sudo docker run \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume /tmp/ci_checker:/tmp/ci_checker \
   --volume $ci_checker_config_path:/home/dblab/configs:ro \
-registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:${dle_version}
+registry.gitlab.com/postgres-ai/database-lab/dblab-ci-checker:$image_version
 
