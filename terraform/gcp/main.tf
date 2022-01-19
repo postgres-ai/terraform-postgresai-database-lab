@@ -1,3 +1,11 @@
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+#  public_key = tls_private_key.ssh_key.public_key_openssh
+
+
 resource "google_compute_disk" "dle_zfs_disk" {
   name                      = "dle-zfs-disk${count.index}"
   count                     = 3
@@ -23,6 +31,16 @@ resource "google_compute_instance" "vm_instance" {
     network = google_compute_network.vpc_network.self_link
     access_config {
     }
+  }
+
+  metadata = {
+    ssh-keys = "ubuntu:${tls_private_key.ssh_key.public_key_openssh}"
+  }
+  provisioner "local-exec" { # save private key locally
+    command = "echo '${tls_private_key.ssh_key.private_key_pem}' > ./dle.pem"
+  }
+  provisioner "local-exec" {
+    command = "chmod 600 ./dle.pem"
   }
 }
 
