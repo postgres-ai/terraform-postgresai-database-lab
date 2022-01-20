@@ -3,8 +3,18 @@ resource "tls_private_key" "ssh_key" {
   rsa_bits  = 4096
 }
 
-#  public_key = tls_private_key.ssh_key.public_key_openssh
+resource "google_service_account" "dle_service_account" {
+  account_id = "dle-service-account"
+  display_name = "DLE-SA"
+}
 
+#resource "google_project_iam_binding" "firestore_owner_binding" {
+#  role               = "roles/datastore.owner"
+#  members = [
+#    "serviceAccount:sa-name@${var.project}.iam.gserviceaccount.com",
+#  ]
+#  depends_on = [google_service_account.sa-name]
+#}
 
 resource "google_compute_disk" "dle_zfs_disk" {
   name                      = "dle-zfs-disk${count.index}"
@@ -31,6 +41,11 @@ resource "google_compute_instance" "vm_instance" {
     network = google_compute_network.vpc_network.self_link
     access_config {
     }
+  }
+
+  service_account {
+    email = "dle-service-account@postgres-ai.iam.gserviceaccount.com"
+    scopes = ["storage-ro"]
   }
 
   metadata = {
