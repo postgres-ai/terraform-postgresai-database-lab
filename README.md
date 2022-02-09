@@ -49,7 +49,7 @@ The following steps were tested on Ubuntu 20.04 but supposed to be valid for oth
     ```
 1. Edit `terraform.tfvars` file. In our example, we will use Heroku demo database as a source:
     ```config
-    dle_version = "v3.0.0"
+    dle_version = "v3.0.1"
 
     aws_ami_name = "DBLABserver*"
 
