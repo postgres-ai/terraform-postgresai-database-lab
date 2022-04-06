@@ -122,10 +122,10 @@ mkdir -p $dle_config_path
 mkdir -p $dle_meta_path
 mkdir -p $postgres_conf_path
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.logical_generic.yml --output $dle_config_path/server.yml
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/pg_hba.conf \
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/config.example.logical_generic.yml --output $dle_config_path/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/standard/postgres/control/pg_hba.conf \
   --output $postgres_conf_path/pg_hba.conf
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
 cat /tmp/postgresql_clones_custom.conf >> $postgres_conf_path/postgresql.conf
 
 yq e -i '
