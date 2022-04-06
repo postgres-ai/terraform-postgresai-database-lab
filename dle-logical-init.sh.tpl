@@ -217,7 +217,7 @@ for i in {1..30000}; do
   sleep 10
 done
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cli_install.sh | bash
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/scripts/cli_install.sh | bash
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 
 # Init dblab environment
