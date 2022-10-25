@@ -121,11 +121,12 @@ postgres_conf_path="/home/ubuntu/.dblab/postgres_conf"
 mkdir -p $dle_config_path
 mkdir -p $dle_meta_path
 mkdir -p $postgres_conf_path
+mkdir -p $dle_logs_path
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.logical_generic.yml --output $dle_config_path/server.yml
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/pg_hba.conf \
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/config.example.logical_generic.yml --output $dle_config_path/server.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/standard/postgres/control/pg_hba.conf \
   --output $postgres_conf_path/pg_hba.conf
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/standard/postgres/control/postgresql.conf --output $postgres_conf_path/postgresql.conf
 cat /tmp/postgresql_clones_custom.conf >> $postgres_conf_path/postgresql.conf
 
 yq e -i '
@@ -202,8 +203,9 @@ sudo docker run \
   --publish 2345:2345 \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume /var/lib/dblab:/var/lib/dblab/:rshared \
-  --volume $dle_config_path:/home/dblab/configs:ro \
+  --volume $dle_config_path:/home/dblab/configs \
   --volume $dle_meta_path:/home/dblab/meta \
+  --volume $dle_logs_path:/home/dblab/logs \
   --volume $postgres_conf_path:/home/dblab/standard/postgres/control \
   $extra_mount \
   --env DOCKER_API_VERSION=1.39 \
@@ -217,7 +219,7 @@ for i in {1..30000}; do
   sleep 10
 done
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/scripts/cli_install.sh | bash
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/scripts/cli_install.sh | bash
 sudo mv ~/.dblab/dblab /usr/local/bin/dblab
 
 # Init dblab environment
@@ -263,7 +265,7 @@ sudo docker run \
 ci_checker_config_path="/home/ubuntu/.dblab/ci_checker/configs"
 mkdir -p $ci_checker_config_path
 
-curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/configs/config.example.ci_checker.yml --output $ci_checker_config_path/ci_checker.yml
+curl https://gitlab.com/postgres-ai/database-lab/-/raw/${dle_version}/engine/configs/config.example.ci_checker.yml --output $ci_checker_config_path/ci_checker.yml
 
 yq e -i '
   .app.debug = ${dle_debug_mode} |
