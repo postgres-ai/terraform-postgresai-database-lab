@@ -202,7 +202,7 @@ sudo docker run \
   --publish 2345:2345 \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   --volume /var/lib/dblab:/var/lib/dblab/:rshared \
-  --volume $dle_config_path:/home/dblab/configs:ro \
+  --volume $dle_config_path:/home/dblab/configs \
   --volume $dle_meta_path:/home/dblab/meta \
   --volume $postgres_conf_path:/home/dblab/standard/postgres/control \
   $extra_mount \
